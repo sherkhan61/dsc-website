@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { theme } from "../styles/GlobalStyles";
 
 /**
- * Gradient Background component with floating ellipses
+ * Gradient Background component with large central ellipse
  * Inspired by bolt.new design
  */
 
@@ -18,52 +18,123 @@ const BackgroundWrapper = styled.div`
   pointer-events: none;
 `;
 
-const Ellipse = styled.div<{
-  $top?: string;
-  $left?: string;
-  $right?: string;
-  $bottom?: string;
-  $size: string;
-  $color: string;
-  $delay?: string;
-  $duration?: string;
-}>`
+// Large central ellipse with gradient
+const CentralEllipse = styled.div`
   position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 1400px;
+  height: 1400px;
   border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.4;
-  width: ${props => props.$size};
-  height: ${props => props.$size};
-  background: ${props => props.$color};
+  background: radial-gradient(
+    circle,
+    ${theme.colors.gradientPurple} 0%,
+    ${theme.colors.gradientBlue} 25%,
+    ${theme.colors.gradientCyan} 50%,
+    transparent 70%
+  );
+  filter: blur(120px);
+  opacity: 0.6;
+  animation: pulse 8s ease-in-out infinite;
 
-  ${props => props.$top && `top: ${props.$top};`}
-  ${props => props.$left && `left: ${props.$left};`}
-  ${props => props.$right && `right: ${props.$right};`}
-  ${props => props.$bottom && `bottom: ${props.$bottom};`}
-
-  animation: float ${props => props.$duration || '30s'} ease-in-out infinite;
-  animation-delay: ${props => props.$delay || '0s'};
+  @keyframes pulse {
+    0%, 100% {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 0.6;
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(1.1);
+      opacity: 0.8;
+    }
+  }
 
   @media (max-width: ${theme.breakpoints.tablet}) {
-    width: calc(${props => props.$size} * 0.7);
-    height: calc(${props => props.$size} * 0.7);
+    width: 900px;
+    height: 900px;
+    filter: blur(80px);
+  }
+`;
+
+// Secondary ellipse for depth
+const SecondaryEllipse = styled.div`
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 1000px;
+  height: 1000px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    ${theme.colors.gradientGreen} 0%,
+    ${theme.colors.accentPurple} 40%,
+    transparent 70%
+  );
+  filter: blur(100px);
+  opacity: 0.4;
+  animation: floatSlow 12s ease-in-out infinite;
+
+  @keyframes floatSlow {
+    0%, 100% {
+      transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+      transform: translate(-50%, -60%) scale(1.05);
+    }
+  }
+
+  @media (max-width: ${theme.breakpoints.tablet}) {
+    width: 700px;
+    height: 700px;
+    filter: blur(70px);
+  }
+`;
+
+// Accent ellipse on the side
+const AccentEllipse = styled.div<{ $position: 'left' | 'right' }>`
+  position: absolute;
+  top: 50%;
+  ${props => props.$position}: -200px;
+  transform: translateY(-50%);
+  width: 800px;
+  height: 800px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    ${props => props.$position === 'left' ? theme.colors.gradientPink : theme.colors.gradientCyan} 0%,
+    transparent 60%
+  );
+  filter: blur(100px);
+  opacity: 0.3;
+  animation: float 15s ease-in-out infinite;
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(-50%);
+    }
+    50% {
+      transform: translateY(-45%);
+    }
+  }
+
+  @media (max-width: ${theme.breakpoints.tablet}) {
+    width: 500px;
+    height: 500px;
     filter: blur(60px);
   }
 `;
 
-const EllipseAlt = styled(Ellipse)`
-  animation: floatSlow ${props => props.$duration || '40s'} ease-in-out infinite;
-  animation-delay: ${props => props.$delay || '0s'};
-`;
-
+// Gradient overlay for smooth fade
 const Gradient = styled.div`
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(10, 10, 15, 0) 0%,
-    rgba(10, 10, 15, 0.8) 50%,
-    rgba(10, 10, 15, 0.95) 100%
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    rgba(10, 10, 15, 0.3) 40%,
+    rgba(10, 10, 15, 0.7) 70%,
+    rgba(10, 10, 15, 0.9) 100%
   );
   z-index: 1;
 `;
@@ -71,77 +142,17 @@ const Gradient = styled.div`
 const GradientBackground: React.FC = () => {
   return (
     <BackgroundWrapper>
-      {/* Blue ellipse - top left */}
-      <Ellipse
-        $top="-20%"
-        $left="-10%"
-        $size="800px"
-        $color={theme.colors.gradientBlue}
-        $duration="30s"
-        $delay="0s"
-      />
+      {/* Large central gradient ellipse */}
+      <CentralEllipse />
 
-      {/* Purple ellipse - top right */}
-      <EllipseAlt
-        $top="10%"
-        $right="-15%"
-        $size="700px"
-        $color={theme.colors.gradientPurple}
-        $duration="35s"
-        $delay="5s"
-      />
+      {/* Secondary ellipse for depth */}
+      <SecondaryEllipse />
 
-      {/* Cyan ellipse - middle left */}
-      <Ellipse
-        $top="40%"
-        $left="-5%"
-        $size="600px"
-        $color={theme.colors.gradientCyan}
-        $duration="40s"
-        $delay="10s"
-      />
+      {/* Accent ellipses on sides */}
+      <AccentEllipse $position="left" />
+      <AccentEllipse $position="right" />
 
-      {/* Green ellipse - center */}
-      <EllipseAlt
-        $top="50%"
-        $right="30%"
-        $size="500px"
-        $color={theme.colors.gradientGreen}
-        $duration="45s"
-        $delay="3s"
-      />
-
-      {/* Pink ellipse - bottom right */}
-      <Ellipse
-        $bottom="-10%"
-        $right="-5%"
-        $size="650px"
-        $color={theme.colors.gradientPink}
-        $duration="38s"
-        $delay="7s"
-      />
-
-      {/* Purple ellipse 2 - bottom left */}
-      <EllipseAlt
-        $bottom="5%"
-        $left="10%"
-        $size="550px"
-        $color={theme.colors.gradientPurple}
-        $duration="42s"
-        $delay="12s"
-      />
-
-      {/* Blue ellipse 2 - center right */}
-      <Ellipse
-        $top="60%"
-        $right="5%"
-        $size="450px"
-        $color={theme.colors.gradientBlue}
-        $duration="36s"
-        $delay="15s"
-      />
-
-      {/* Gradient overlay for smooth fade */}
+      {/* Radial gradient overlay */}
       <Gradient />
     </BackgroundWrapper>
   );
