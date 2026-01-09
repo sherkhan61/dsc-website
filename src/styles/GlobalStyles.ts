@@ -1,49 +1,62 @@
 /**
  * Global styles and theme configuration
- * Design inspired by resend.com - dark, minimal, corporate
+ * Design inspired by bolt.new - modern, gradient ellipses, glassmorphism
  */
 
 import { createGlobalStyle } from "styled-components";
 
 export const theme = {
   colors: {
-    // Dark theme inspired by resend.com
-    background: "#0a0a0a",
-    surface: "#111111",
-    surfaceHover: "#1a1a1a",
-    border: "#222222",
-    borderHover: "#333333",
-    
+    // Dark theme with vibrant accents (bolt.new style)
+    background: "#0a0a0f",
+    backgroundLight: "#12121a",
+    surface: "rgba(20, 20, 30, 0.5)",
+    surfaceHover: "rgba(30, 30, 45, 0.7)",
+    surfaceGlass: "rgba(20, 20, 30, 0.4)",
+    border: "rgba(100, 100, 150, 0.2)",
+    borderHover: "rgba(100, 100, 200, 0.4)",
+
     // Text colors
     text: "#ffffff",
-    textSecondary: "#a0a0a0",
-    textTertiary: "#666666",
-    
-    // Brand colors - modern green accent
+    textSecondary: "#b4b4c8",
+    textTertiary: "#808090",
+
+    // Brand colors - vibrant gradients
     primary: "#00ff88",
     primaryHover: "#00dd77",
-    primaryMuted: "#00ff8820",
-    
-    // Additional colors
+    primaryMuted: "rgba(0, 255, 136, 0.1)",
+
+    // Accent colors for gradients
     accent: "#0066ff",
-    accentHover: "#0055ee",
+    accentPurple: "#a855f7",
+    accentCyan: "#06b6d4",
+    accentPink: "#ec4899",
+
+    // Status colors
     error: "#ff4444",
     success: "#00ff88",
     warning: "#ffaa00",
-    
+
+    // Gradient colors for ellipses
+    gradientBlue: "#0066ff",
+    gradientPurple: "#a855f7",
+    gradientCyan: "#06b6d4",
+    gradientGreen: "#00ff88",
+    gradientPink: "#ec4899",
+
     // Gradients
     gradientPrimary: "linear-gradient(135deg, #00ff88 0%, #00dd77 100%)",
-    gradientAccent: "linear-gradient(135deg, #0066ff 0%, #0055ee 100%)",
-    gradientBg: "linear-gradient(180deg, #0a0a0a 0%, #000000 100%)",
+    gradientAccent: "linear-gradient(135deg, #0066ff 0%, #a855f7 100%)",
+    gradientBg: "linear-gradient(180deg, #0a0a0f 0%, #000000 100%)",
+    gradientMulti: "linear-gradient(135deg, #0066ff 0%, #a855f7 50%, #ec4899 100%)",
   },
-  
+
   fonts: {
-    // Using system fonts for performance and unique character
     display: "'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif",
     body: "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif",
     mono: "'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Droid Sans Mono', 'Source Code Pro', monospace",
   },
-  
+
   fontSizes: {
     xs: "0.75rem",    // 12px
     sm: "0.875rem",   // 14px
@@ -57,7 +70,7 @@ export const theme = {
     "6xl": "4rem",    // 64px
     "7xl": "5rem",    // 80px
   },
-  
+
   breakpoints: {
     mobile: "640px",
     tablet: "768px",
@@ -65,7 +78,7 @@ export const theme = {
     wide: "1280px",
     ultraWide: "1536px",
   },
-  
+
   spacing: {
     xs: "0.25rem",   // 4px
     sm: "0.5rem",    // 8px
@@ -77,34 +90,37 @@ export const theme = {
     "4xl": "6rem",   // 96px
     "5xl": "8rem",   // 128px
   },
-  
+
   transitions: {
     fast: "150ms cubic-bezier(0.4, 0, 0.2, 1)",
     normal: "250ms cubic-bezier(0.4, 0, 0.2, 1)",
     slow: "350ms cubic-bezier(0.4, 0, 0.2, 1)",
   },
-  
+
   shadows: {
-    sm: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
-    base: "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
-    md: "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
-    lg: "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
-    xl: "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)",
-    glow: "0 0 20px rgba(0, 255, 136, 0.3)",
-    glowAccent: "0 0 20px rgba(0, 102, 255, 0.3)",
+    sm: "0 1px 2px 0 rgba(0, 0, 0, 0.3)",
+    base: "0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px -1px rgba(0, 0, 0, 0.4)",
+    md: "0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.4)",
+    lg: "0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.4)",
+    xl: "0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5)",
+    glow: "0 0 30px rgba(0, 255, 136, 0.4), 0 0 60px rgba(0, 255, 136, 0.2)",
+    glowAccent: "0 0 30px rgba(0, 102, 255, 0.4), 0 0 60px rgba(0, 102, 255, 0.2)",
+    glowPurple: "0 0 30px rgba(168, 85, 247, 0.4), 0 0 60px rgba(168, 85, 247, 0.2)",
   },
-  
+
   borderRadius: {
     sm: "0.25rem",   // 4px
     base: "0.5rem",  // 8px
     md: "0.75rem",   // 12px
     lg: "1rem",      // 16px
     xl: "1.5rem",    // 24px
+    "2xl": "2rem",   // 32px
     full: "9999px",
   },
-  
+
   zIndex: {
     base: 0,
+    background: -1,
     dropdown: 1000,
     sticky: 1100,
     fixed: 1200,
@@ -141,7 +157,8 @@ export const GlobalStyles = createGlobalStyle`
     color: ${theme.colors.text};
     background: ${theme.colors.background};
     overflow-x: hidden;
-    
+    position: relative;
+
     /* Prevent text size adjustment on mobile */
     -webkit-text-size-adjust: 100%;
     -moz-text-size-adjust: 100%;
@@ -187,11 +204,11 @@ export const GlobalStyles = createGlobalStyle`
     color: ${theme.colors.primary};
     text-decoration: none;
     transition: color ${theme.transitions.fast};
-    
+
     &:hover {
       color: ${theme.colors.primaryHover};
     }
-    
+
     &:focus-visible {
       outline: 2px solid ${theme.colors.primary};
       outline-offset: 2px;
@@ -215,7 +232,7 @@ export const GlobalStyles = createGlobalStyle`
     font-family: ${theme.fonts.mono};
     font-size: 0.9em;
     padding: 0.125rem 0.25rem;
-    background: ${theme.colors.surface};
+    background: ${theme.colors.surfaceGlass};
     border: 1px solid ${theme.colors.border};
     border-radius: ${theme.borderRadius.sm};
     color: ${theme.colors.primary};
@@ -225,12 +242,12 @@ export const GlobalStyles = createGlobalStyle`
     font-family: ${theme.fonts.mono};
     font-size: 0.875rem;
     padding: ${theme.spacing.md};
-    background: ${theme.colors.surface};
+    background: ${theme.colors.surfaceGlass};
     border: 1px solid ${theme.colors.border};
     border-radius: ${theme.borderRadius.md};
     overflow-x: auto;
     margin-bottom: ${theme.spacing.md};
-    
+
     code {
       padding: 0;
       background: none;
@@ -251,12 +268,12 @@ export const GlobalStyles = createGlobalStyle`
     cursor: pointer;
     border: none;
     background: none;
-    
+
     &:focus-visible {
       outline: 2px solid ${theme.colors.primary};
       outline-offset: 2px;
     }
-    
+
     &:disabled {
       cursor: not-allowed;
       opacity: 0.5;
@@ -269,7 +286,7 @@ export const GlobalStyles = createGlobalStyle`
   select {
     font-family: ${theme.fonts.body};
     font-size: ${theme.fontSizes.base};
-    
+
     &:focus {
       outline: none;
     }
@@ -306,13 +323,13 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   ::-webkit-scrollbar-track {
-    background: ${theme.colors.surface};
+    background: ${theme.colors.backgroundLight};
   }
 
   ::-webkit-scrollbar-thumb {
     background: ${theme.colors.border};
     border-radius: ${theme.borderRadius.full};
-    
+
     &:hover {
       background: ${theme.colors.borderHover};
     }
@@ -322,6 +339,51 @@ export const GlobalStyles = createGlobalStyle`
   *:focus-visible {
     outline: 2px solid ${theme.colors.primary};
     outline-offset: 2px;
+  }
+
+  /* Keyframe animations */
+  @keyframes float {
+    0%, 100% {
+      transform: translate(0, 0) scale(1);
+    }
+    33% {
+      transform: translate(30px, -30px) scale(1.05);
+    }
+    66% {
+      transform: translate(-20px, 20px) scale(0.95);
+    }
+  }
+
+  @keyframes floatSlow {
+    0%, 100% {
+      transform: translate(0, 0) rotate(0deg);
+    }
+    33% {
+      transform: translate(-20px, 20px) rotate(3deg);
+    }
+    66% {
+      transform: translate(20px, -20px) rotate(-3deg);
+    }
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   /* Smooth animations */

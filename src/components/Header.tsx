@@ -9,10 +9,11 @@ const HeaderWrapper = styled.header<{ $isScrolled: boolean }>`
   left: 0;
   right: 0;
   z-index: ${theme.zIndex.sticky};
-  background: ${props => props.$isScrolled ? "rgba(10, 10, 10, 0.95)" : "transparent"};
-  backdrop-filter: none;
+  background: ${props => props.$isScrolled ? theme.colors.surfaceGlass : "transparent"};
+  backdrop-filter: ${props => props.$isScrolled ? "blur(20px) saturate(180%)" : "none"};
   border-bottom: ${props => props.$isScrolled ? `1px solid ${theme.colors.border}` : "none"};
   transition: all ${theme.transitions.normal};
+  box-shadow: ${props => props.$isScrolled ? theme.shadows.md : "none"};
 `;
 
 const Container = styled.div`
@@ -199,8 +200,8 @@ const Overlay = styled.div<{ $isOpen: boolean }>`
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: none;
+    background: rgba(10, 10, 15, 0.75);
+    backdrop-filter: blur(10px);
     opacity: ${props => props.$isOpen ? 1 : 0};
     pointer-events: ${props => props.$isOpen ? "all" : "none"};
     transition: opacity ${theme.transitions.normal};
