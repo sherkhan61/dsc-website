@@ -210,33 +210,6 @@ const Footer: React.FC = () => {
             </AddressText>
           </FooterSection>
 
-          {/* Services */}
-          <FooterSection>
-            <FooterTitle>Услуги</FooterTitle>
-            <FooterList>
-              <FooterListItem>
-                <FooterLink to="/services/code-analysis">
-                  Анализ исходного кода
-                </FooterLink>
-              </FooterListItem>
-              <FooterListItem>
-                <FooterLink to="/services/security-testing">
-                  Испытания ИБ
-                </FooterLink>
-              </FooterListItem>
-              <FooterListItem>
-                <FooterLink to="/services/certification">
-                  Сертификация
-                </FooterLink>
-              </FooterListItem>
-              <FooterListItem>
-                <FooterLink to="/services/audit">
-                  Аудит ИБ
-                </FooterLink>
-              </FooterListItem>
-            </FooterList>
-          </FooterSection>
-
           {/* Company */}
           <FooterSection>
             <FooterTitle>Компания</FooterTitle>
