@@ -31,7 +31,7 @@ const Container = styled.div`
 
 const Logo = styled(Link)`
   font-family: ${theme.fonts.display};
-  font-size: ${theme.fontSizes["2xl"]};
+  font-size: ${theme.fontSizes.base};
   font-weight: 700;
   color: ${theme.colors.text};
   text-decoration: none;
@@ -252,7 +252,7 @@ const Header: React.FC<HeaderProps> = ({ pathname = "/" }) => {
       <HeaderWrapper $isScrolled={isScrolled}>
         <Container>
           <Logo to="/" aria-label="Digital Security Center - Главная">
-            ЦЦБ
+            Центр цифровой безопасности
           </Logo>
 
           <Nav $isOpen={isMenuOpen} role="navigation" aria-label="Основная навигация">
