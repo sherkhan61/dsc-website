@@ -149,15 +149,10 @@ const SubmitButton = styled.button`
   cursor: pointer;
   transition: background ${theme.transitions.fast}, box-shadow ${theme.transitions.fast};
 
-  &:hover {
-    background: ${theme.colors.primaryHover};
-    box-shadow: ${theme.shadows.glow};
-    color: ${theme.colors.text};
-  }
-    
   &:hover:not(:disabled) {
     background: ${theme.colors.primaryHover};
     box-shadow: ${theme.shadows.glow};
+    color: ${theme.colors.text};
   }
 
   &:disabled {
@@ -184,9 +179,9 @@ interface ContactFormProps {
   submitEndpoint?: string;
 }
 
-const ContactForm: React.FC<ContactFormProps> = ({ 
+const ContactForm: React.FC<ContactFormProps> = ({
   onSuccess,
-  submitEndpoint = "/api/contact" 
+  submitEndpoint = "/.netlify/functions/contact"
 }) => {
   const [formState, setFormState] = useState<FormState>({
     isSubmitting: false,
@@ -265,8 +260,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
     }
 
     try {
-      // In production, this would be an actual API call
-      // IMPORTANT: Server-side must also validate and sanitize!
+      // Send request to Netlify Function
       const response = await fetch(submitEndpoint, {
         method: "POST",
         headers: {
@@ -280,8 +274,33 @@ const ContactForm: React.FC<ContactFormProps> = ({
         }),
       });
 
+      const responseData = await response.json();
+
       if (!response.ok) {
-        throw new Error("Ошибка отправки формы");
+        // Handle specific error responses
+        let errorMessage = "Произошла ошибка при отправке формы. Пожалуйста, попробуйте позже.";
+
+        if (response.status === 429) {
+          errorMessage = responseData.error || "Слишком много попыток. Пожалуйста, подождите минуту.";
+        } else if (response.status === 403) {
+          errorMessage = responseData.error || "Ошибка безопасности. Пожалуйста, обновите страницу.";
+        } else if (response.status === 400) {
+          errorMessage = responseData.error || "Пожалуйста, проверьте правильность заполнения всех полей.";
+          // Show validation details if available
+          if (responseData.details && Array.isArray(responseData.details)) {
+            errorMessage += "\n" + responseData.details.join(". ");
+          }
+        }
+
+        setFormState({
+          isSubmitting: false,
+          isSuccess: false,
+          isError: true,
+          errors: {
+            general: errorMessage,
+          },
+        });
+        return;
       }
 
       // Success
@@ -293,7 +312,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
       });
 
       reset();
-      
+
       // Generate new CSRF token
       setCsrfToken(generateCSRFToken());
 
@@ -301,12 +320,13 @@ const ContactForm: React.FC<ContactFormProps> = ({
         onSuccess();
       }
     } catch (error) {
+      console.error("Form submission error:", error);
       setFormState({
         isSubmitting: false,
         isSuccess: false,
         isError: true,
         errors: {
-          general: "Произошла ошибка при отправке формы. Пожалуйста, попробуйте позже.",
+          general: "Ошибка сети. Пожалуйста, проверьте подключение к интернету и попробуйте снова.",
         },
       });
     }
