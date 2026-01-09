@@ -3,7 +3,6 @@ import { ThemeProvider } from "styled-components";
 import { theme, GlobalStyles } from "../styles/GlobalStyles";
 import Header from "./Header";
 import Footer from "./Footer";
-import GradientBackground from "./GradientBackground";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -18,7 +17,6 @@ const Layout: React.FC<LayoutProps> = ({ children, pathname }) => {
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
-      <GradientBackground />
       <Header pathname={pathname} />
       <main
         style={{
