@@ -4,7 +4,7 @@ import { theme } from "../styles/GlobalStyles";
 
 /**
  * Gradient Background component with large central ellipse
- * Inspired by bolt.new design
+ * Inspired by bolt.new design with rim glow effect
  */
 
 const BackgroundWrapper = styled.div`
@@ -18,123 +18,88 @@ const BackgroundWrapper = styled.div`
   pointer-events: none;
 `;
 
-// Large central ellipse with gradient
+// Large central ellipse with rim glow (bright edges, dark center)
 const CentralEllipse = styled.div`
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 1400px;
-  height: 1400px;
+  width: 1800px;
+  height: 700px;
   border-radius: 50%;
   background: radial-gradient(
-    circle,
-    ${theme.colors.gradientPurple} 0%,
-    ${theme.colors.gradientBlue} 25%,
-    ${theme.colors.gradientCyan} 50%,
-    transparent 70%
+    ellipse,
+    transparent 0%,
+    transparent 30%,
+    ${theme.colors.gradientBlue}40 60%,
+    ${theme.colors.gradientCyan}60 80%,
+    ${theme.colors.gradientBlue}80 100%
   );
-  filter: blur(120px);
-  opacity: 0.6;
+  filter: blur(60px);
+  opacity: 0.8;
   animation: pulse 8s ease-in-out infinite;
 
   @keyframes pulse {
     0%, 100% {
       transform: translate(-50%, -50%) scale(1);
-      opacity: 0.6;
-    }
-    50% {
-      transform: translate(-50%, -50%) scale(1.1);
       opacity: 0.8;
     }
-  }
-
-  @media (max-width: ${theme.breakpoints.tablet}) {
-    width: 900px;
-    height: 900px;
-    filter: blur(80px);
-  }
-`;
-
-// Secondary ellipse for depth
-const SecondaryEllipse = styled.div`
-  position: absolute;
-  top: 30%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 1000px;
-  height: 1000px;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    ${theme.colors.gradientGreen} 0%,
-    ${theme.colors.accentPurple} 40%,
-    transparent 70%
-  );
-  filter: blur(100px);
-  opacity: 0.4;
-  animation: floatSlow 12s ease-in-out infinite;
-
-  @keyframes floatSlow {
-    0%, 100% {
-      transform: translate(-50%, -50%) scale(1);
-    }
     50% {
-      transform: translate(-50%, -60%) scale(1.05);
+      transform: translate(-50%, -50%) scale(1.05);
+      opacity: 1;
     }
   }
 
   @media (max-width: ${theme.breakpoints.tablet}) {
-    width: 700px;
-    height: 700px;
-    filter: blur(70px);
+    width: 1200px;
+    height: 500px;
+    filter: blur(40px);
+  }
+
+  @media (max-width: ${theme.breakpoints.mobile}) {
+    width: 900px;
+    height: 400px;
+    filter: blur(30px);
   }
 `;
 
-// Accent ellipse on the side
-const AccentEllipse = styled.div<{ $position: 'left' | 'right' }>`
+// Additional glow layer for stronger rim effect
+const GlowLayer = styled.div`
   position: absolute;
   top: 50%;
-  ${props => props.$position}: -200px;
-  transform: translateY(-50%);
-  width: 800px;
-  height: 800px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 1900px;
+  height: 750px;
   border-radius: 50%;
   background: radial-gradient(
-    circle,
-    ${props => props.$position === 'left' ? theme.colors.gradientPink : theme.colors.gradientCyan} 0%,
-    transparent 60%
+    ellipse,
+    transparent 0%,
+    transparent 40%,
+    ${theme.colors.gradientCyan}20 70%,
+    ${theme.colors.gradientBlue}40 90%,
+    transparent 100%
   );
-  filter: blur(100px);
-  opacity: 0.3;
-  animation: float 15s ease-in-out infinite;
-
-  @keyframes float {
-    0%, 100% {
-      transform: translateY(-50%);
-    }
-    50% {
-      transform: translateY(-45%);
-    }
-  }
+  filter: blur(80px);
+  opacity: 0.6;
 
   @media (max-width: ${theme.breakpoints.tablet}) {
-    width: 500px;
-    height: 500px;
-    filter: blur(60px);
+    width: 1300px;
+    height: 550px;
+    filter: blur(50px);
   }
 `;
 
-// Gradient overlay for smooth fade
+// Gradient overlay for smooth fade to dark edges
 const Gradient = styled.div`
   position: absolute;
   inset: 0;
   background: radial-gradient(
-    ellipse at center,
+    ellipse 120% 60% at 50% 50%,
     transparent 0%,
-    rgba(10, 10, 15, 0.3) 40%,
-    rgba(10, 10, 15, 0.7) 70%,
-    rgba(10, 10, 15, 0.9) 100%
+    rgba(10, 10, 15, 0.4) 50%,
+    rgba(10, 10, 15, 0.8) 80%,
+    rgba(10, 10, 15, 0.95) 100%
   );
   z-index: 1;
 `;
@@ -142,15 +107,11 @@ const Gradient = styled.div`
 const GradientBackground: React.FC = () => {
   return (
     <BackgroundWrapper>
-      {/* Large central gradient ellipse */}
+      {/* Large central ellipse with rim glow */}
       <CentralEllipse />
 
-      {/* Secondary ellipse for depth */}
-      <SecondaryEllipse />
-
-      {/* Accent ellipses on sides */}
-      <AccentEllipse $position="left" />
-      <AccentEllipse $position="right" />
+      {/* Additional glow layer */}
+      <GlowLayer />
 
       {/* Radial gradient overlay */}
       <Gradient />
