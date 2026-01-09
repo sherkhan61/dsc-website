@@ -113,9 +113,6 @@ const GradientBackground: React.FC = () => {
 
       {/* Additional glow layer */}
       <GlowLayer />
-
-      {/* Radial gradient overlay */}
-      <Gradient />
     </BackgroundWrapper>
   );
 };
