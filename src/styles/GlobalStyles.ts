@@ -8,8 +8,8 @@ import { createGlobalStyle } from "styled-components";
 export const theme = {
   colors: {
     // Dark theme with vibrant accents (bolt.new style)
-    background: "#0a0a0f",
-    backgroundLight: "#12121a",
+    background: "#000000",
+    backgroundLight: "#0a0a0f",
     surface: "rgba(20, 20, 30, 0.5)",
     surfaceHover: "rgba(30, 30, 45, 0.7)",
     surfaceGlass: "rgba(20, 20, 30, 0.4)",

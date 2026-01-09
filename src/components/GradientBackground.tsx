@@ -90,17 +90,17 @@ const GlowLayer = styled.div`
   }
 `;
 
-// Gradient overlay for smooth fade to dark edges (very subtle)
+// Gradient overlay for smooth fade to dark edges
 const Gradient = styled.div`
   position: absolute;
   inset: 0;
   background: radial-gradient(
     ellipse 120% 60% at 50% 50%,
     transparent 0%,
-    transparent 40%,
-    rgba(10, 10, 15, 0.3) 70%,
-    rgba(10, 10, 15, 0.7) 90%,
-    rgba(10, 10, 15, 0.9) 100%
+    transparent 30%,
+    rgba(0, 0, 0, 0.5) 60%,
+    rgba(0, 0, 0, 0.8) 85%,
+    rgba(0, 0, 0, 0.95) 100%
   );
   z-index: 1;
 `;
