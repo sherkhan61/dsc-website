@@ -10,7 +10,7 @@ const FooterWrapper = styled.footer`
   padding: ${theme.spacing["3xl"]} 0 ${theme.spacing.xl};
   margin-top: ${theme.spacing["5xl"]};
   position: relative;
-  z-index: 1;
+  z-index: 10;
 `;
 
 const Container = styled.div`

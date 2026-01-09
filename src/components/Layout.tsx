@@ -25,7 +25,7 @@ const Layout: React.FC<LayoutProps> = ({ children, pathname }) => {
           minHeight: "100vh",
           paddingTop: "80px", // Offset for fixed header
           position: "relative",
-          zIndex: 1,
+          zIndex: 10,
         }}
       >
         {children}

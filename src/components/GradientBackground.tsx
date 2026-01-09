@@ -13,7 +13,7 @@ const BackgroundWrapper = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: ${theme.zIndex.background};
+  z-index: 0;
   overflow: hidden;
   pointer-events: none;
 `;
