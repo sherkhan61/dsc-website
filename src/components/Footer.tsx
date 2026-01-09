@@ -242,7 +242,7 @@ const Footer: React.FC = () => {
             <FooterTitle>Компания</FooterTitle>
             <FooterList>
               <FooterListItem>
-                <FooterLink to="/about">О лаборатории</FooterLink>
+                <FooterLink to="/about">О нас</FooterLink>
               </FooterListItem>
               <FooterListItem>
                 <FooterLink to="/clients">Клиентам</FooterLink>

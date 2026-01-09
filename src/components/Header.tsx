@@ -242,7 +242,7 @@ const Header: React.FC<HeaderProps> = ({ pathname = "/" }) => {
 
   const navItems = [
     { label: "Главная", path: "/" },
-    { label: "О лаборатории", path: "/about" },
+    { label: "О нас", path: "/about" },
     { label: "Услуги", path: "/services" },
     { label: "Клиентам", path: "/clients" },
   ];

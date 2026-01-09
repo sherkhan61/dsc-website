@@ -167,10 +167,11 @@ const AboutPage: React.FC = () => {
   return (
     <Layout pathname="/about">
       <SEO
-        title="О лаборатории — ТОО «Центр цифровой безопасности»"
+        title="О нас — ТОО «Центр цифровой безопасности»"
         description="Аккредитованная лаборатория испытаний информационной безопасности с многолетним опытом работы. Команда профессионалов, современное оборудование, высокие стандарты качества."
         pathname="/about"
         keywords={[
+          "о нас",
           "о лаборатории",
           "аккредитованная лаборатория",
           "испытания ИБ Астана",
@@ -179,7 +180,7 @@ const AboutPage: React.FC = () => {
       />
 
       <PageHeader>
-        <PageTitle>О лаборатории</PageTitle>
+        <PageTitle>О нас</PageTitle>
       </PageHeader>
 
       <ContentContainer>
