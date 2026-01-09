@@ -13,6 +13,8 @@ import {
   type FormData as SecurityFormData,
 } from "../utils/security";
 import { ContactFormData, FormState } from "../types";
+import { postWithRetry, contactApiCircuitBreaker, withTimeout } from "../utils/api";
+import logger from "../utils/logger";
 
 const FormContainer = styled.div`
   width: 100%;
@@ -260,19 +262,42 @@ const ContactForm: React.FC<ContactFormProps> = ({
     }
 
     try {
-      // Send request to Netlify Function
-      const response = await fetch(submitEndpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRF-Token": csrfToken,
-        },
-        body: JSON.stringify({
-          ...sanitizedData,
-          csrfToken,
-          timestamp: Date.now(),
-        }),
+      logger.info('Contact form submission started', {
+        endpoint: submitEndpoint,
+        hasCSRF: !!csrfToken,
       });
+
+      // Send request to Netlify Function with retry logic and timeout
+      const response = await contactApiCircuitBreaker.execute(() =>
+        withTimeout(
+          postWithRetry(
+            submitEndpoint,
+            {
+              ...sanitizedData,
+              csrfToken,
+              timestamp: Date.now(),
+            },
+            {
+              headers: {
+                "X-CSRF-Token": csrfToken,
+              },
+            },
+            {
+              maxRetries: 3,
+              baseDelay: 1000,
+              maxDelay: 5000,
+              shouldRetry: (error, attempt) => {
+                // Only retry on network errors or 5xx errors
+                if (!error.response) return true;
+                const status = error.response?.status;
+                return status >= 500 && status < 600;
+              },
+            }
+          ),
+          30000, // 30 second timeout
+          'Превышено время ожидания ответа сервера'
+        )
+      );
 
       const responseData = await response.json();
 
@@ -282,14 +307,34 @@ const ContactForm: React.FC<ContactFormProps> = ({
 
         if (response.status === 429) {
           errorMessage = responseData.error || "Слишком много попыток. Пожалуйста, подождите минуту.";
+          logger.warn('Rate limit exceeded on contact form', {
+            status: response.status,
+          });
         } else if (response.status === 403) {
           errorMessage = responseData.error || "Ошибка безопасности. Пожалуйста, обновите страницу.";
+          logger.warn('CSRF validation failed', {
+            status: response.status,
+          });
         } else if (response.status === 400) {
           errorMessage = responseData.error || "Пожалуйста, проверьте правильность заполнения всех полей.";
           // Show validation details if available
           if (responseData.details && Array.isArray(responseData.details)) {
             errorMessage += "\n" + responseData.details.join(". ");
           }
+          logger.warn('Form validation failed', {
+            status: response.status,
+            details: responseData.details,
+          });
+        } else {
+          logger.error(
+            'Contact form submission failed',
+            new Error(`HTTP ${response.status}: ${response.statusText}`),
+            {
+              status: response.status,
+              statusText: response.statusText,
+              responseData,
+            }
+          );
         }
 
         setFormState({
@@ -304,6 +349,10 @@ const ContactForm: React.FC<ContactFormProps> = ({
       }
 
       // Success
+      logger.info('Contact form submission successful', {
+        status: response.status,
+      });
+
       setFormState({
         isSubmitting: false,
         isSuccess: true,
@@ -319,14 +368,27 @@ const ContactForm: React.FC<ContactFormProps> = ({
       if (onSuccess) {
         onSuccess();
       }
-    } catch (error) {
-      console.error("Form submission error:", error);
+    } catch (error: any) {
+      logger.error('Contact form submission error', error, {
+        endpoint: submitEndpoint,
+        errorMessage: error.message,
+      });
+
+      let errorMessage = "Ошибка сети. Пожалуйста, проверьте подключение к интернету и попробуйте снова.";
+
+      // Handle circuit breaker errors
+      if (error.message === 'Circuit breaker is open') {
+        errorMessage = "Сервис временно недоступен. Пожалуйста, попробуйте через минуту.";
+      } else if (error.message.includes('timeout')) {
+        errorMessage = "Превышено время ожидания. Пожалуйста, попробуйте еще раз.";
+      }
+
       setFormState({
         isSubmitting: false,
         isSuccess: false,
         isError: true,
         errors: {
-          general: "Ошибка сети. Пожалуйста, проверьте подключение к интернету и попробуйте снова.",
+          general: errorMessage,
         },
       });
     }
