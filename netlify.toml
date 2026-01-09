@@ -1,0 +1,99 @@
+[build]
+  command = "npm run build"
+  publish = "public"
+
+[build.environment]
+  NODE_VERSION = "18"
+  NPM_VERSION = "9"
+
+# Security Headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Prevent clickjacking
+    X-Frame-Options = "DENY"
+    
+    # Prevent MIME type sniffing
+    X-Content-Type-Options = "nosniff"
+    
+    # Enable XSS protection
+    X-XSS-Protection = "1; mode=block"
+    
+    # Referrer policy
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    
+    # Permissions policy
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    
+    # Content Security Policy
+    Content-Security-Policy = """
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com;
+      style-src 'self' 'unsafe-inline';
+      img-src 'self' data: https: blob:;
+      font-src 'self' data:;
+      connect-src 'self' https://www.google-analytics.com;
+      frame-ancestors 'none';
+      base-uri 'self';
+      form-action 'self';
+    """
+    
+    # HSTS - Strict Transport Security (only enable after testing with HTTPS)
+    # Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+
+# Cache control for static assets
+[[headers]]
+  for = "/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Cache control for HTML pages
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Redirects
+[[redirects]]
+  from = "/api/*"
+  to = "https://api.digital-security-center.kz/:splat"
+  status = 200
+  force = true
+  headers = {X-From = "Netlify"}
+
+# 404 redirect
+[[redirects]]
+  from = "/*"
+  to = "/404.html"
+  status = 404
+
+# Netlify Functions (if using)
+# [[redirects]]
+#   from = "/api/contact"
+#   to = "/.netlify/functions/contact"
+#   status = 200
+
+# Plugin configuration
+[[plugins]]
+  package = "@netlify/plugin-lighthouse"
+  
+  [plugins.inputs.thresholds]
+    performance = 0.9
+    accessibility = 0.9
+    best-practices = 0.9
+    seo = 0.9
+
+# Form handling (Netlify Forms)
+# Uncomment if using Netlify Forms instead of custom API
+# [[plugins]]
+#   package = "netlify-plugin-form-submissions"
