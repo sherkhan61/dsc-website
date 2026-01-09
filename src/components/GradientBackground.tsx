@@ -31,22 +31,22 @@ const CentralEllipse = styled.div`
     ellipse,
     transparent 0%,
     transparent 30%,
-    ${theme.colors.gradientBlue}40 60%,
-    ${theme.colors.gradientCyan}60 80%,
-    ${theme.colors.gradientBlue}80 100%
+    ${theme.colors.gradientBlue}CC 60%,
+    ${theme.colors.gradientCyan}FF 80%,
+    ${theme.colors.gradientBlue}DD 100%
   );
   filter: blur(60px);
-  opacity: 0.8;
+  opacity: 1;
   animation: pulse 8s ease-in-out infinite;
 
   @keyframes pulse {
     0%, 100% {
       transform: translate(-50%, -50%) scale(1);
-      opacity: 0.8;
+      opacity: 1;
     }
     50% {
       transform: translate(-50%, -50%) scale(1.05);
-      opacity: 1;
+      opacity: 0.9;
     }
   }
 
@@ -76,12 +76,12 @@ const GlowLayer = styled.div`
     ellipse,
     transparent 0%,
     transparent 40%,
-    ${theme.colors.gradientCyan}20 70%,
-    ${theme.colors.gradientBlue}40 90%,
+    ${theme.colors.gradientCyan}AA 70%,
+    ${theme.colors.gradientBlue}CC 90%,
     transparent 100%
   );
   filter: blur(80px);
-  opacity: 0.6;
+  opacity: 0.8;
 
   @media (max-width: ${theme.breakpoints.tablet}) {
     width: 1300px;
@@ -90,16 +90,17 @@ const GlowLayer = styled.div`
   }
 `;
 
-// Gradient overlay for smooth fade to dark edges
+// Gradient overlay for smooth fade to dark edges (very subtle)
 const Gradient = styled.div`
   position: absolute;
   inset: 0;
   background: radial-gradient(
     ellipse 120% 60% at 50% 50%,
     transparent 0%,
-    rgba(10, 10, 15, 0.4) 50%,
-    rgba(10, 10, 15, 0.8) 80%,
-    rgba(10, 10, 15, 0.95) 100%
+    transparent 40%,
+    rgba(10, 10, 15, 0.3) 70%,
+    rgba(10, 10, 15, 0.7) 90%,
+    rgba(10, 10, 15, 0.9) 100%
   );
   z-index: 1;
 `;
