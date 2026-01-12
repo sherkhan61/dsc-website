@@ -215,7 +215,7 @@ const Overlay = styled.div<{ $isOpen: boolean }>`
     opacity: ${props => props.$isOpen ? 1 : 0};
     pointer-events: ${props => props.$isOpen ? "all" : "none"};
     transition: opacity ${theme.transitions.normal};
-    z-index: ${theme.zIndex.dropdown};
+    z-index: ${theme.zIndex.fixed};
     overflow: hidden;
     -webkit-overflow-scrolling: touch;
     touch-action: none;
@@ -289,6 +289,12 @@ const Header: React.FC<HeaderProps> = ({ pathname = "/" }) => {
 
   return (
     <>
+      <Overlay
+        $isOpen={isMenuOpen}
+        onClick={() => setIsMenuOpen(false)}
+        aria-hidden="true"
+      />
+
       <HeaderWrapper $isScrolled={isScrolled}>
         <Container>
           <Logo to="/" aria-label="Digital Security Center - Главная">
@@ -320,12 +326,6 @@ const Header: React.FC<HeaderProps> = ({ pathname = "/" }) => {
             <span />
           </MenuButton>
         </Container>
-
-        <Overlay
-          $isOpen={isMenuOpen}
-          onClick={() => setIsMenuOpen(false)}
-          aria-hidden="true"
-        />
       </HeaderWrapper>
     </>
   );
