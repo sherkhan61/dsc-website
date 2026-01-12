@@ -210,12 +210,12 @@ const Overlay = styled.div<{ $isOpen: boolean }>`
     height: 100%;
     min-height: 100vh;
     min-height: -webkit-fill-available;
-    background: #000000;
+    background: rgba(0, 0, 0, 0.95);
     backdrop-filter: blur(10px);
-    opacity: ${props => props.$isOpen ? 0.98 : 0};
+    opacity: ${props => props.$isOpen ? 1 : 0};
     pointer-events: ${props => props.$isOpen ? "all" : "none"};
     transition: opacity ${theme.transitions.normal};
-    z-index: ${theme.zIndex.modal - 1};
+    z-index: ${theme.zIndex.dropdown};
     overflow: hidden;
     -webkit-overflow-scrolling: touch;
     touch-action: none;
@@ -320,13 +320,13 @@ const Header: React.FC<HeaderProps> = ({ pathname = "/" }) => {
             <span />
           </MenuButton>
         </Container>
-      </HeaderWrapper>
 
-      <Overlay
-        $isOpen={isMenuOpen}
-        onClick={() => setIsMenuOpen(false)}
-        aria-hidden="true"
-      />
+        <Overlay
+          $isOpen={isMenuOpen}
+          onClick={() => setIsMenuOpen(false)}
+          aria-hidden="true"
+        />
+      </HeaderWrapper>
     </>
   );
 };
