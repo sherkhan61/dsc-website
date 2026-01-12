@@ -93,6 +93,8 @@ const Nav = styled.nav<{ $isOpen: boolean }>`
     transform: ${props => props.$isOpen ? "translateX(0)" : "translateX(100%)"};
     transition: transform ${theme.transitions.normal};
     z-index: ${theme.zIndex.modal};
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 `;
 
@@ -200,7 +202,7 @@ const Overlay = styled.div<{ $isOpen: boolean }>`
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(10, 10, 15, 0.75);
+    background: rgba(0, 0, 0, 0.95);
     backdrop-filter: blur(10px);
     opacity: ${props => props.$isOpen ? 1 : 0};
     pointer-events: ${props => props.$isOpen ? "all" : "none"};
