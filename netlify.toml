@@ -12,34 +12,41 @@
   [headers.values]
     # Prevent clickjacking
     X-Frame-Options = "DENY"
-    
+
     # Prevent MIME type sniffing
     X-Content-Type-Options = "nosniff"
-    
+
     # Enable XSS protection
     X-XSS-Protection = "1; mode=block"
-    
+
     # Referrer policy
     Referrer-Policy = "strict-origin-when-cross-origin"
-    
-    # Permissions policy
-    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
-    
-    # Content Security Policy
+
+    # Permissions policy - disable all unnecessary features
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()"
+
+    # Content Security Policy (Strict)
+    # Note: 'unsafe-inline' for styles required by styled-components
+    # For production without analytics, remove GTM/GA domains
     Content-Security-Policy = """
       default-src 'self';
-      script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com;
+      script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com;
       style-src 'self' 'unsafe-inline';
       img-src 'self' data: https: blob:;
       font-src 'self' data:;
-      connect-src 'self' https://www.google-analytics.com;
+      connect-src 'self' https://www.google-analytics.com /.netlify/functions/;
       frame-ancestors 'none';
       base-uri 'self';
       form-action 'self';
+      object-src 'none';
+      media-src 'none';
+      worker-src 'self';
+      manifest-src 'self';
+      upgrade-insecure-requests;
     """
-    
-    # HSTS - Strict Transport Security (only enable after testing with HTTPS)
-    # Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+
+    # HSTS - Enable after HTTPS is confirmed
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
 
 # Cache control for static assets
 [[headers]]
@@ -63,13 +70,19 @@
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
-# Redirects
+# Redirects - API to Netlify Functions
 [[redirects]]
-  from = "/api/*"
-  to = "https://api.digital-security-center.kz/:splat"
+  from = "/api/contact"
+  to = "/.netlify/functions/contact"
   status = 200
-  force = true
-  headers = {X-From = "Netlify"}
+
+# External API redirect (if you have other API endpoints)
+# [[redirects]]
+#   from = "/api/*"
+#   to = "https://api.digital-security-center.kz/:splat"
+#   status = 200
+#   force = true
+#   headers = {X-From = "Netlify"}
 
 # 404 redirect
 [[redirects]]
@@ -77,11 +90,10 @@
   to = "/404.html"
   status = 404
 
-# Netlify Functions (if using)
-# [[redirects]]
-#   from = "/api/contact"
-#   to = "/.netlify/functions/contact"
-#   status = 200
+# Netlify Functions configuration
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
 
 # Plugin configuration
 [[plugins]]

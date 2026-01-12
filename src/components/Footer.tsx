@@ -4,10 +4,13 @@ import styled from "styled-components";
 import { theme } from "../styles/GlobalStyles";
 
 const FooterWrapper = styled.footer`
-  background: ${theme.colors.surface};
+  background: ${theme.colors.surfaceGlass};
+  backdrop-filter: blur(20px) saturate(180%);
   border-top: 1px solid ${theme.colors.border};
   padding: ${theme.spacing["3xl"]} 0 ${theme.spacing.xl};
   margin-top: ${theme.spacing["5xl"]};
+  position: relative;
+  z-index: 10;
 `;
 
 const Container = styled.div`
@@ -172,12 +175,14 @@ const Badge = styled.div`
   gap: ${theme.spacing.xs};
   padding: ${theme.spacing.xs} ${theme.spacing.sm};
   background: ${theme.colors.primaryMuted};
+  backdrop-filter: blur(10px);
   border: 1px solid ${theme.colors.primary};
-  border-radius: ${theme.borderRadius.base};
+  border-radius: ${theme.borderRadius.md};
   font-size: ${theme.fontSizes.xs};
   color: ${theme.colors.primary};
   font-weight: 600;
   margin-top: ${theme.spacing.sm};
+  box-shadow: ${theme.shadows.glow};
 
   &::before {
     content: "✓";
@@ -205,39 +210,12 @@ const Footer: React.FC = () => {
             </AddressText>
           </FooterSection>
 
-          {/* Services */}
-          <FooterSection>
-            <FooterTitle>Услуги</FooterTitle>
-            <FooterList>
-              <FooterListItem>
-                <FooterLink to="/services/code-analysis">
-                  Анализ исходного кода
-                </FooterLink>
-              </FooterListItem>
-              <FooterListItem>
-                <FooterLink to="/services/security-testing">
-                  Испытания ИБ
-                </FooterLink>
-              </FooterListItem>
-              <FooterListItem>
-                <FooterLink to="/services/certification">
-                  Сертификация
-                </FooterLink>
-              </FooterListItem>
-              <FooterListItem>
-                <FooterLink to="/services/audit">
-                  Аудит ИБ
-                </FooterLink>
-              </FooterListItem>
-            </FooterList>
-          </FooterSection>
-
           {/* Company */}
           <FooterSection>
             <FooterTitle>Компания</FooterTitle>
             <FooterList>
               <FooterListItem>
-                <FooterLink to="/about">О лаборатории</FooterLink>
+                <FooterLink to="/about">О нас</FooterLink>
               </FooterListItem>
               <FooterListItem>
                 <FooterLink to="/clients">Клиентам</FooterLink>

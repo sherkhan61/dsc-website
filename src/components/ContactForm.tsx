@@ -13,6 +13,8 @@ import {
   type FormData as SecurityFormData,
 } from "../utils/security";
 import { ContactFormData, FormState } from "../types";
+import { postWithRetry, contactApiCircuitBreaker, withTimeout } from "../utils/api";
+import logger from "../utils/logger";
 
 const FormContainer = styled.div`
   width: 100%;
@@ -149,15 +151,10 @@ const SubmitButton = styled.button`
   cursor: pointer;
   transition: background ${theme.transitions.fast}, box-shadow ${theme.transitions.fast};
 
-  &:hover {
-    background: ${theme.colors.primaryHover};
-    box-shadow: ${theme.shadows.glow};
-    color: ${theme.colors.text};
-  }
-    
   &:hover:not(:disabled) {
     background: ${theme.colors.primaryHover};
     box-shadow: ${theme.shadows.glow};
+    color: ${theme.colors.text};
   }
 
   &:disabled {
@@ -184,9 +181,9 @@ interface ContactFormProps {
   submitEndpoint?: string;
 }
 
-const ContactForm: React.FC<ContactFormProps> = ({ 
+const ContactForm: React.FC<ContactFormProps> = ({
   onSuccess,
-  submitEndpoint = "/api/contact" 
+  submitEndpoint = "/.netlify/functions/contact"
 }) => {
   const [formState, setFormState] = useState<FormState>({
     isSubmitting: false,
@@ -265,26 +262,97 @@ const ContactForm: React.FC<ContactFormProps> = ({
     }
 
     try {
-      // In production, this would be an actual API call
-      // IMPORTANT: Server-side must also validate and sanitize!
-      const response = await fetch(submitEndpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRF-Token": csrfToken,
-        },
-        body: JSON.stringify({
-          ...sanitizedData,
-          csrfToken,
-          timestamp: Date.now(),
-        }),
+      logger.info('Contact form submission started', {
+        endpoint: submitEndpoint,
+        hasCSRF: !!csrfToken,
       });
 
+      // Send request to Netlify Function with retry logic and timeout
+      const response = await contactApiCircuitBreaker.execute(() =>
+        withTimeout(
+          postWithRetry(
+            submitEndpoint,
+            {
+              ...sanitizedData,
+              csrfToken,
+              timestamp: Date.now(),
+            },
+            {
+              headers: {
+                "X-CSRF-Token": csrfToken,
+              },
+            },
+            {
+              maxRetries: 3,
+              baseDelay: 1000,
+              maxDelay: 5000,
+              shouldRetry: (error, attempt) => {
+                // Only retry on network errors or 5xx errors
+                if (!error.response) return true;
+                const status = error.response?.status;
+                return status >= 500 && status < 600;
+              },
+            }
+          ),
+          30000, // 30 second timeout
+          'Превышено время ожидания ответа сервера'
+        )
+      );
+
+      const responseData = await response.json();
+
       if (!response.ok) {
-        throw new Error("Ошибка отправки формы");
+        // Handle specific error responses
+        let errorMessage = "Произошла ошибка при отправке формы. Пожалуйста, попробуйте позже.";
+
+        if (response.status === 429) {
+          errorMessage = responseData.error || "Слишком много попыток. Пожалуйста, подождите минуту.";
+          logger.warn('Rate limit exceeded on contact form', {
+            status: response.status,
+          });
+        } else if (response.status === 403) {
+          errorMessage = responseData.error || "Ошибка безопасности. Пожалуйста, обновите страницу.";
+          logger.warn('CSRF validation failed', {
+            status: response.status,
+          });
+        } else if (response.status === 400) {
+          errorMessage = responseData.error || "Пожалуйста, проверьте правильность заполнения всех полей.";
+          // Show validation details if available
+          if (responseData.details && Array.isArray(responseData.details)) {
+            errorMessage += "\n" + responseData.details.join(". ");
+          }
+          logger.warn('Form validation failed', {
+            status: response.status,
+            details: responseData.details,
+          });
+        } else {
+          logger.error(
+            'Contact form submission failed',
+            new Error(`HTTP ${response.status}: ${response.statusText}`),
+            {
+              status: response.status,
+              statusText: response.statusText,
+              responseData,
+            }
+          );
+        }
+
+        setFormState({
+          isSubmitting: false,
+          isSuccess: false,
+          isError: true,
+          errors: {
+            general: errorMessage,
+          },
+        });
+        return;
       }
 
       // Success
+      logger.info('Contact form submission successful', {
+        status: response.status,
+      });
+
       setFormState({
         isSubmitting: false,
         isSuccess: true,
@@ -293,20 +361,34 @@ const ContactForm: React.FC<ContactFormProps> = ({
       });
 
       reset();
-      
+
       // Generate new CSRF token
       setCsrfToken(generateCSRFToken());
 
       if (onSuccess) {
         onSuccess();
       }
-    } catch (error) {
+    } catch (error: any) {
+      logger.error('Contact form submission error', error, {
+        endpoint: submitEndpoint,
+        errorMessage: error.message,
+      });
+
+      let errorMessage = "Ошибка сети. Пожалуйста, проверьте подключение к интернету и попробуйте снова.";
+
+      // Handle circuit breaker errors
+      if (error.message === 'Circuit breaker is open') {
+        errorMessage = "Сервис временно недоступен. Пожалуйста, попробуйте через минуту.";
+      } else if (error.message.includes('timeout')) {
+        errorMessage = "Превышено время ожидания. Пожалуйста, попробуйте еще раз.";
+      }
+
       setFormState({
         isSubmitting: false,
         isSuccess: false,
         isError: true,
         errors: {
-          general: "Произошла ошибка при отправке формы. Пожалуйста, попробуйте позже.",
+          general: errorMessage,
         },
       });
     }

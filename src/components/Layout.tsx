@@ -18,10 +18,12 @@ const Layout: React.FC<LayoutProps> = ({ children, pathname }) => {
     <ThemeProvider theme={theme}>
       <GlobalStyles />
       <Header pathname={pathname} />
-      <main 
-        style={{ 
-          minHeight: "100vh", 
-          paddingTop: "80px" // Offset for fixed header
+      <main
+        style={{
+          minHeight: "100vh",
+          paddingTop: "80px", // Offset for fixed header
+          position: "relative",
+          zIndex: 10,
         }}
       >
         {children}

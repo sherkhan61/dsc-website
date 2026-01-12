@@ -7,25 +7,12 @@ import { theme } from "../styles/GlobalStyles";
 
 const Hero = styled.section`
   position: relative;
-  min-height: 90vh;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: ${theme.spacing["4xl"]} ${theme.spacing.xl};
   overflow: hidden;
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: 
-      radial-gradient(ellipse at top, rgba(0, 255, 136, 0.05) 0%, transparent 50%),
-      radial-gradient(ellipse at bottom right, rgba(0, 102, 255, 0.05) 0%, transparent 50%);
-    pointer-events: none;
-  }
 `;
 
 const HeroContent = styled.div`
@@ -40,25 +27,28 @@ const Badge = styled.div`
   display: inline-flex;
   align-items: center;
   gap: ${theme.spacing.xs};
-  padding: ${theme.spacing.xs} ${theme.spacing.md};
-  background: ${theme.colors.primaryMuted};
-  border: 1px solid ${theme.colors.primary};
+  padding: ${theme.spacing.sm} ${theme.spacing.lg};
+  background: ${theme.colors.surfaceGlass};
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid ${theme.colors.border};
   border-radius: ${theme.borderRadius.full};
   font-size: ${theme.fontSizes.sm};
   color: ${theme.colors.primary};
   font-weight: 600;
   margin-bottom: ${theme.spacing.xl};
-  animation: fadeIn 0.6s ease-out;
+  animation: fadeIn 0.8s ease-out;
+  box-shadow: ${theme.shadows.glow};
 
   &::before {
     content: "✓";
     font-weight: bold;
+    font-size: ${theme.fontSizes.lg};
   }
 
   @keyframes fadeIn {
     from {
       opacity: 0;
-      transform: translateY(-10px);
+      transform: translateY(-20px);
     }
     to {
       opacity: 1;
@@ -68,17 +58,17 @@ const Badge = styled.div`
 `;
 
 const HeroTitle = styled.h1`
-  font-size: clamp(2.5rem, 6vw, 5rem);
-  font-weight: 700;
-  line-height: 1.1;
-  margin-bottom: ${theme.spacing.lg};
-  letter-spacing: -0.03em;
-  animation: fadeInUp 0.8s ease-out 0.2s both;
+  font-size: clamp(3rem, 8vw, 6.5rem);
+  font-weight: 800;
+  line-height: 1.05;
+  margin-bottom: ${theme.spacing.xl};
+  letter-spacing: -0.04em;
+  animation: fadeInUp 1s ease-out 0.2s both;
 
   @keyframes fadeInUp {
     from {
       opacity: 0;
-      transform: translateY(30px);
+      transform: translateY(40px);
     }
     to {
       opacity: 1;
@@ -87,51 +77,85 @@ const HeroTitle = styled.h1`
   }
 
   span {
-    background: linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.accent} 100%);
+    background: linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.accent} 50%, ${theme.colors.accentPurple} 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    background-size: 200% auto;
+    animation: shimmer 3s linear infinite;
+  }
+
+  @keyframes shimmer {
+    to {
+      background-position: 200% center;
+    }
   }
 `;
 
 const HeroDescription = styled.p`
-  font-size: clamp(1.125rem, 2vw, 1.5rem);
+  font-size: clamp(1.125rem, 2.5vw, 1.35rem);
   color: ${theme.colors.textSecondary};
-  max-width: 800px;
-  margin: 0 auto ${theme.spacing["2xl"]};
-  line-height: 1.6;
-  animation: fadeInUp 0.8s ease-out 0.4s both;
+  max-width: 750px;
+  margin: 0 auto ${theme.spacing["3xl"]};
+  line-height: 1.7;
+  animation: fadeInUp 1s ease-out 0.4s both;
 `;
 
 const HeroCTA = styled.div`
   display: flex;
-  gap: ${theme.spacing.md};
+  gap: ${theme.spacing.lg};
   justify-content: center;
   flex-wrap: wrap;
-  animation: fadeInUp 0.8s ease-out 0.6s both;
+  animation: fadeInUp 1s ease-out 0.6s both;
 `;
 
 const PrimaryButton = styled(Link)`
-  padding: ${theme.spacing.md} ${theme.spacing["2xl"]};
-  background: ${theme.colors.primary};
+  padding: ${theme.spacing.md} ${theme.spacing["3xl"]};
+  background: linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.accent} 100%);
   color: ${theme.colors.background};
   font-size: ${theme.fontSizes.lg};
-  font-weight: 600;
-  border-radius: ${theme.borderRadius.md};
+  font-weight: 700;
+  border-radius: ${theme.borderRadius.xl};
   text-decoration: none;
-  transition: background ${theme.transitions.fast}, box-shadow ${theme.transitions.fast};
+  transition: all ${theme.transitions.fast};
   display: inline-flex;
   align-items: center;
   gap: ${theme.spacing.sm};
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, ${theme.colors.accent} 0%, ${theme.colors.accentPurple} 100%);
+    opacity: 0;
+    transition: opacity ${theme.transitions.fast};
+  }
 
   &:hover {
-    background: ${theme.colors.primaryHover};
+    transform: translateY(-2px) scale(1.02);
     box-shadow: ${theme.shadows.glow};
     color: ${theme.colors.text};
+
+    &::before {
+      opacity: 1;
+    }
+  }
+
+  &:active {
+    transform: translateY(0) scale(0.98);
+  }
+
+  span {
+    position: relative;
+    z-index: 1;
   }
 
   &::after {
     content: "→";
+    position: relative;
+    z-index: 1;
     display: inline-block;
     transition: transform ${theme.transitions.fast};
   }
@@ -143,19 +167,25 @@ const PrimaryButton = styled(Link)`
 
 const SecondaryButton = styled(Link)`
   padding: ${theme.spacing.md} ${theme.spacing["2xl"]};
-  background: transparent;
+  background: ${theme.colors.surfaceGlass};
+  backdrop-filter: blur(20px) saturate(180%);
   color: ${theme.colors.text};
   font-size: ${theme.fontSizes.lg};
   font-weight: 600;
-  border: 2px solid ${theme.colors.border};
-  border-radius: ${theme.borderRadius.md};
+  border: 1px solid ${theme.colors.border};
+  border-radius: ${theme.borderRadius.xl};
   text-decoration: none;
   transition: all ${theme.transitions.fast};
 
   &:hover {
-    border-color: ${theme.colors.primary};
-    background: ${theme.colors.primaryMuted};
-    color: ${theme.colors.primary};
+    border-color: ${theme.colors.borderHover};
+    background: ${theme.colors.surfaceHover};
+    transform: translateY(-2px);
+    box-shadow: ${theme.shadows.lg};
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 `;
 
@@ -163,6 +193,7 @@ const Section = styled.section`
   max-width: 1280px;
   margin: 0 auto;
   padding: ${theme.spacing["5xl"]} ${theme.spacing.xl};
+  position: relative;
 
   @media (max-width: ${theme.breakpoints.tablet}) {
     padding: ${theme.spacing["4xl"]} ${theme.spacing.lg};
@@ -170,29 +201,40 @@ const Section = styled.section`
 `;
 
 const SectionTitle = styled.h2`
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
   font-weight: 700;
   text-align: center;
-  margin-bottom: ${theme.spacing["2xl"]};
-  letter-spacing: -0.02em;
+  margin-bottom: ${theme.spacing["3xl"]};
+  letter-spacing: -0.03em;
+
+  span {
+    background: linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.accentPurple} 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 `;
 
 const ServicesGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: ${theme.spacing.xl};
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: ${theme.spacing["2xl"]};
   margin-top: ${theme.spacing["3xl"]};
 `;
 
 const ServiceCard = styled(Link)`
-  padding: ${theme.spacing["2xl"]};
-  background: ${theme.colors.surface};
+  padding: ${theme.spacing["3xl"]};
+  background: ${theme.colors.surfaceGlass};
+  backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid ${theme.colors.border};
-  border-radius: ${theme.borderRadius.lg};
+  border-radius: ${theme.borderRadius["2xl"]};
   text-decoration: none;
   transition: all ${theme.transitions.normal};
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: ${theme.spacing.lg};
 
   &::before {
     content: "";
@@ -200,20 +242,33 @@ const ServiceCard = styled(Link)`
     top: 0;
     left: 0;
     right: 0;
-    height: 3px;
-    background: ${theme.colors.gradientPrimary};
+    height: 4px;
+    background: linear-gradient(90deg, ${theme.colors.primary}, ${theme.colors.accent}, ${theme.colors.accentPurple});
     transform: scaleX(0);
     transform-origin: left;
     transition: transform ${theme.transitions.normal};
   }
 
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, ${theme.colors.accent}15 0%, ${theme.colors.accentPurple}10 100%);
+    opacity: 0;
+    transition: opacity ${theme.transitions.normal};
+  }
+
   &:hover {
-    border-color: ${theme.colors.primary};
-    transform: translateY(-4px);
-    box-shadow: ${theme.shadows.xl};
+    border-color: ${theme.colors.borderHover};
+    transform: translateY(-8px);
+    box-shadow: ${theme.shadows.glowAccent};
 
     &::before {
       transform: scaleX(1);
+    }
+
+    &::after {
+      opacity: 1;
     }
   }
 
@@ -221,69 +276,102 @@ const ServiceCard = styled(Link)`
     font-size: ${theme.fontSizes["2xl"]};
     margin-bottom: ${theme.spacing.md};
     color: ${theme.colors.text};
+    position: relative;
+    z-index: 1;
   }
 
   p {
     color: ${theme.colors.textSecondary};
     line-height: 1.7;
     margin-bottom: 0;
+    position: relative;
+    z-index: 1;
   }
+`;
+
+const Icon = styled.div`
+  width: 56px;
+  height: 56px;
+  border-radius: ${theme.borderRadius.lg};
+  background: linear-gradient(135deg, ${theme.colors.primary}20 0%, ${theme.colors.accent}20 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: ${theme.fontSizes["3xl"]};
+  position: relative;
+  z-index: 1;
 `;
 
 const StatsSection = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: ${theme.spacing.xl};
-  margin-top: ${theme.spacing["3xl"]};
+  gap: ${theme.spacing["2xl"]};
+  margin-top: ${theme.spacing["4xl"]};
 `;
 
 const StatCard = styled.div`
   text-align: center;
-  padding: ${theme.spacing.xl};
-  background: ${theme.colors.surface};
+  padding: ${theme.spacing["2xl"]};
+  background: ${theme.colors.surfaceGlass};
+  backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid ${theme.colors.border};
-  border-radius: ${theme.borderRadius.lg};
+  border-radius: ${theme.borderRadius.xl};
   transition: all ${theme.transitions.normal};
 
   &:hover {
     border-color: ${theme.colors.primary};
-    transform: translateY(-2px);
+    transform: translateY(-4px);
+    box-shadow: ${theme.shadows.glow};
   }
 `;
 
 const StatValue = styled.div`
-  font-size: clamp(2.5rem, 5vw, 4rem);
-  font-weight: 700;
-  color: ${theme.colors.primary};
+  font-size: clamp(3rem, 6vw, 4.5rem);
+  font-weight: 800;
+  background: linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.accent} 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   margin-bottom: ${theme.spacing.sm};
 `;
 
 const StatLabel = styled.div`
-  font-size: ${theme.fontSizes.base};
+  font-size: ${theme.fontSizes.lg};
   color: ${theme.colors.textSecondary};
+  font-weight: 500;
 `;
 
 const IndexPage: React.FC = () => {
   const services = [
     {
+      icon: "🔍",
       title: "Анализ исходного кода",
-      description: "Профессиональный анализ программного кода с применением методов SAST для выявления уязвимостей и недостатков безопасности на ранних этапах разработки.",
-      path: "/services/code-analysis",
+      description: "Проверка с целью выявления уязвимостей ПО в соответствии с международными классификациями уязвимостей (CWE, OWASP Top 10, OWASP Mobile Top 10, OWASP API Top 10), международными базами данных уязвимостей (CVE, NIST) и стандартом Республики Казахстан 15408-3.",
+      path: "/contacts",
     },
     {
-      title: "Испытания ИБ",
-      description: "Комплексное тестирование систем информационной безопасности с использованием передовых методик пентестинга и анализа защищенности.",
-      path: "/services/security-testing",
+      icon: "🛡️",
+      title: "Испытания функций безопасности",
+      description: "Проверка защитных механизмов серверов и виртуальных ресурсов на соответствие технической документации и нормативным актам РК в области информационной безопасности.",
+      path: "/contacts",
     },
     {
-      title: "Сертификационные испытания",
-      description: "Проведение испытаний для получения сертификатов соответствия требованиям информационной безопасности РК.",
-      path: "/services/certification",
+      icon: "⚡",
+      title: "Нагрузочное тестирование",
+      description: "Оценка соблюдения требований доступности, целостности и конфиденциальности объекта испытаний с применением специализированного ПО в условиях автоматизированных сценариев.",
+      path: "/contacts",
     },
     {
-      title: "Аудит ИБ",
-      description: "Независимая экспертиза систем защиты информации, оценка соответствия стандартам и выработка рекомендаций по повышению уровня безопасности.",
-      path: "/services/audit",
+      icon: "🌐",
+      title: "Проверка сетевой инфраструктуры",
+      description: "Комплексный анализ защитных функций сетевой инфраструктуры на соответствие требованиям технической документации и стандартам безопасности.",
+      path: "/contacts",
+    },
+    {
+      icon: "🔐",
+      title: "Обследование процессов обеспечения информационной безопасности",
+      description: "Проверка соответствия процессов обеспечения информационной безопасности требованиям нормативных правовых актов и стандартов в сфере обеспечения информационной безопасности, сканирование серверов, виртуальных ресурсов и сетевого оборудования программными средствами на наличие известных уязвимостей и формирование рекомендаций по их устранению.",
+      path: "/contacts",
     },
   ];
 
@@ -320,17 +408,22 @@ const IndexPage: React.FC = () => {
             и корпоративными заказчиками по всему Казахстану.
           </HeroDescription>
           <HeroCTA>
-            <PrimaryButton to="/contacts">Связаться с нами</PrimaryButton>
-            <SecondaryButton to="/services">Наши услуги</SecondaryButton>
+            <PrimaryButton to="/contacts">
+              <span>Связаться с нами</span>
+            </PrimaryButton>
+            <SecondaryButton to="/about">О нас</SecondaryButton>
           </HeroCTA>
         </HeroContent>
       </Hero>
 
       <Section>
-        <SectionTitle>Наши услуги</SectionTitle>
+        <SectionTitle>
+          Виды <span>испытаний</span>
+        </SectionTitle>
         <ServicesGrid>
           {services.map((service) => (
-            <ServiceCard key={service.path} to={service.path}>
+            <ServiceCard key={service.title} to={service.path}>
+              <Icon>{service.icon}</Icon>
               <h3>{service.title}</h3>
               <p>{service.description}</p>
             </ServiceCard>
@@ -338,6 +431,19 @@ const IndexPage: React.FC = () => {
         </ServicesGrid>
       </Section>
 
+      <Section>
+        <SectionTitle>
+          Наши <span>достижения</span>
+        </SectionTitle>
+        <StatsSection>
+          {stats.map((stat) => (
+            <StatCard key={stat.label}>
+              <StatValue>{stat.value}</StatValue>
+              <StatLabel>{stat.label}</StatLabel>
+            </StatCard>
+          ))}
+        </StatsSection>
+      </Section>
     </Layout>
   );
 };

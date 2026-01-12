@@ -9,10 +9,11 @@ const HeaderWrapper = styled.header<{ $isScrolled: boolean }>`
   left: 0;
   right: 0;
   z-index: ${theme.zIndex.sticky};
-  background: ${props => props.$isScrolled ? "rgba(10, 10, 10, 0.95)" : "transparent"};
-  backdrop-filter: none;
+  background: ${props => props.$isScrolled ? theme.colors.surfaceGlass : "transparent"};
+  backdrop-filter: ${props => props.$isScrolled ? "blur(20px) saturate(180%)" : "none"};
   border-bottom: ${props => props.$isScrolled ? `1px solid ${theme.colors.border}` : "none"};
   transition: all ${theme.transitions.normal};
+  box-shadow: ${props => props.$isScrolled ? theme.shadows.md : "none"};
 `;
 
 const Container = styled.div`
@@ -30,7 +31,7 @@ const Container = styled.div`
 
 const Logo = styled(Link)`
   font-family: ${theme.fonts.display};
-  font-size: ${theme.fontSizes["2xl"]};
+  font-size: ${theme.fontSizes.base};
   font-weight: 700;
   color: ${theme.colors.text};
   text-decoration: none;
@@ -199,8 +200,8 @@ const Overlay = styled.div<{ $isOpen: boolean }>`
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: none;
+    background: rgba(10, 10, 15, 0.75);
+    backdrop-filter: blur(10px);
     opacity: ${props => props.$isOpen ? 1 : 0};
     pointer-events: ${props => props.$isOpen ? "all" : "none"};
     transition: opacity ${theme.transitions.normal};
@@ -241,8 +242,7 @@ const Header: React.FC<HeaderProps> = ({ pathname = "/" }) => {
 
   const navItems = [
     { label: "Главная", path: "/" },
-    { label: "О лаборатории", path: "/about" },
-    { label: "Услуги", path: "/services" },
+    { label: "О нас", path: "/about" },
     { label: "Клиентам", path: "/clients" },
   ];
 
@@ -251,7 +251,7 @@ const Header: React.FC<HeaderProps> = ({ pathname = "/" }) => {
       <HeaderWrapper $isScrolled={isScrolled}>
         <Container>
           <Logo to="/" aria-label="Digital Security Center - Главная">
-            ЦЦБ
+            Центр цифровой безопасности
           </Logo>
 
           <Nav $isOpen={isMenuOpen} role="navigation" aria-label="Основная навигация">

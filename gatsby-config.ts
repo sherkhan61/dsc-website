@@ -33,13 +33,18 @@ const config: GatsbyConfig = {
     }
   },
   
-  // Security headers and configuration
+  // Performance and security configuration
   flags: {
     DEV_SSR: false,
     FAST_DEV: true,
+    FAST_REFRESH: true,
     PRESERVE_FILE_DOWNLOAD_CACHE: true,
     PARALLEL_SOURCING: true,
+    PRESERVE_WEBPACK_CACHE: true,
   },
+
+  // GraphQL type generation
+  graphqlTypegen: true,
 
   plugins: [
     "gatsby-plugin-react-helmet",
