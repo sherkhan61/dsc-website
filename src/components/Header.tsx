@@ -80,9 +80,10 @@ const Nav = styled.nav<{ $isOpen: boolean }>`
     position: fixed;
     top: 0;
     right: 0;
-    bottom: 0;
     width: 300px;
     max-width: 80vw;
+    height: 100vh;
+    height: 100dvh; /* Dynamic viewport height for mobile browsers */
     background: ${theme.colors.background};
     border-left: 1px solid ${theme.colors.primary};
     box-shadow: -4px 0 24px rgba(0, 255, 136, 0.1);
@@ -242,28 +243,45 @@ const Header: React.FC<HeaderProps> = ({ pathname = "/" }) => {
       const scrollY = window.scrollY;
       document.body.setAttribute('data-scroll-lock', scrollY.toString());
 
-      // Simple scroll lock - just overflow hidden
+      // Lock scroll with overflow hidden only
       document.documentElement.style.overflow = "hidden";
       document.body.style.overflow = "hidden";
 
-      // Prevent iOS Safari bounce/overscroll
-      document.body.style.position = "relative";
-      document.body.style.height = "100%";
+      // For iOS Safari - prevent touch move on body
+      const preventScroll = (e: TouchEvent) => {
+        // Allow scrolling inside Nav menu, prevent on everything else
+        const target = e.target as HTMLElement;
+        if (!target.closest('nav')) {
+          e.preventDefault();
+        }
+      };
+
+      document.body.addEventListener('touchmove', preventScroll, { passive: false });
+      document.body.setAttribute('data-scroll-listener', 'true');
     } else {
       // Restore scroll
       const scrollY = document.body.getAttribute('data-scroll-lock');
 
       document.documentElement.style.overflow = "";
       document.body.style.overflow = "";
-      document.body.style.position = "";
-      document.body.style.height = "";
       document.body.removeAttribute('data-scroll-lock');
+
+      // Remove touch listener
+      if (document.body.getAttribute('data-scroll-listener')) {
+        const preventScroll = (e: TouchEvent) => {
+          const target = e.target as HTMLElement;
+          if (!target.closest('nav')) {
+            e.preventDefault();
+          }
+        };
+        document.body.removeEventListener('touchmove', preventScroll);
+        document.body.removeAttribute('data-scroll-listener');
+      }
 
       // Restore scroll position if needed
       if (scrollY) {
         const currentScroll = window.scrollY;
         const savedScroll = parseInt(scrollY);
-        // Only restore if position changed significantly
         if (Math.abs(currentScroll - savedScroll) > 10) {
           window.scrollTo(0, savedScroll);
         }
@@ -274,9 +292,8 @@ const Header: React.FC<HeaderProps> = ({ pathname = "/" }) => {
     return () => {
       document.documentElement.style.overflow = "";
       document.body.style.overflow = "";
-      document.body.style.position = "";
-      document.body.style.height = "";
       document.body.removeAttribute('data-scroll-lock');
+      document.body.removeAttribute('data-scroll-listener');
     };
   }, [isMenuOpen]);
 
