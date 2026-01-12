@@ -1,4 +1,5 @@
 import { Handler, HandlerEvent, HandlerResponse } from '@netlify/functions';
+import nodemailer from 'nodemailer';
 
 /**
  * Netlify Function для обработки контактной формы
@@ -101,22 +102,7 @@ const sendEmail = async (data: {
   phone: string;
   message: string;
 }): Promise<boolean> => {
-  // ВНИМАНИЕ: Для работы email отправки нужно установить nodemailer
-  // npm install nodemailer @types/nodemailer
-
-  // Временно: логируем в консоль (для тестирования)
-  console.log('=== NEW CONTACT FORM SUBMISSION ===');
-  console.log('Name:', data.name);
-  console.log('Email:', data.email);
-  console.log('Phone:', data.phone);
-  console.log('Message:', data.message);
-  console.log('Time:', new Date().toISOString());
-  console.log('===================================');
-
-  // TODO: Раскомментируйте после установки nodemailer и настройки SMTP
-  /*
-  const nodemailer = require('nodemailer');
-
+  // Настройка SMTP транспорта
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST || 'smtp.gmail.com',
     port: parseInt(process.env.SMTP_PORT || '587'),
@@ -158,15 +144,12 @@ ${data.message}
 
   try {
     await transporter.sendMail(mailOptions);
+    console.log('Email sent successfully to:', process.env.NOTIFY_EMAIL);
     return true;
   } catch (error) {
     console.error('Email sending failed:', error);
     return false;
   }
-  */
-
-  // Временно возвращаем success для тестирования
-  return true;
 };
 
 // Главный handler
