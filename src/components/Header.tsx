@@ -202,12 +202,13 @@ const Overlay = styled.div<{ $isOpen: boolean }>`
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.95);
+    background: #000000;
     backdrop-filter: blur(10px);
     opacity: ${props => props.$isOpen ? 1 : 0};
     pointer-events: ${props => props.$isOpen ? "all" : "none"};
     transition: opacity ${theme.transitions.normal};
     z-index: ${theme.zIndex.modal - 1};
+    overflow: hidden;
   }
 `;
 
@@ -236,9 +237,20 @@ const Header: React.FC<HeaderProps> = ({ pathname = "/" }) => {
   useEffect(() => {
     // Prevent scroll when menu is open
     if (isMenuOpen) {
+      const scrollY = window.scrollY;
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = "100%";
       document.body.style.overflow = "hidden";
     } else {
+      const scrollY = document.body.style.top;
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
       document.body.style.overflow = "";
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || "0") * -1);
+      }
     }
   }, [isMenuOpen]);
 
