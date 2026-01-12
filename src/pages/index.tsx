@@ -59,7 +59,7 @@ const Badge = styled.div`
 
 const HeroTitle = styled.h1`
   font-size: clamp(2rem, 5vw, 3.5rem);
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.2;
   margin-bottom: ${theme.spacing.xl};
   letter-spacing: -0.02em;
@@ -81,6 +81,14 @@ const HeroTitle = styled.h1`
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    background-size: 200% auto;
+    animation: shimmer 3s linear infinite;
+  }
+
+  @keyframes shimmer {
+    to {
+      background-position: 200% center;
+    }
   }
 `;
 
@@ -392,7 +400,7 @@ const IndexPage: React.FC = () => {
         <HeroContent>
           <Badge>Аккредитованная лаборатория НАО «НЦЭ РК»</Badge>
           <HeroTitle>
-            Профессиональные испытания <span>информационной безопасности</span>
+            Испытания <span>информационной безопасности</span>
           </HeroTitle>
           <HeroDescription>
             Аккредитованная лаборатория с многолетним опытом в области анализа кода,
