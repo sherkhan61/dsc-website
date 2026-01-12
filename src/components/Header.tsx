@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "gatsby";
 import styled from "styled-components";
 import { theme } from "../styles/GlobalStyles";
@@ -221,6 +221,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ pathname = "/" }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const preventScrollRef = useRef<((e: TouchEvent) => void) | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -248,7 +249,8 @@ const Header: React.FC<HeaderProps> = ({ pathname = "/" }) => {
       document.body.style.overflow = "hidden";
 
       // For iOS Safari - prevent touch move on body
-      const preventScroll = (e: TouchEvent) => {
+      // Store function reference so we can properly remove it later
+      preventScrollRef.current = (e: TouchEvent) => {
         // Allow scrolling inside Nav menu, prevent on everything else
         const target = e.target as HTMLElement;
         if (!target.closest('nav')) {
@@ -256,8 +258,7 @@ const Header: React.FC<HeaderProps> = ({ pathname = "/" }) => {
         }
       };
 
-      document.body.addEventListener('touchmove', preventScroll, { passive: false });
-      document.body.setAttribute('data-scroll-listener', 'true');
+      document.body.addEventListener('touchmove', preventScrollRef.current, { passive: false });
     } else {
       // Restore scroll
       const scrollY = document.body.getAttribute('data-scroll-lock');
@@ -266,16 +267,10 @@ const Header: React.FC<HeaderProps> = ({ pathname = "/" }) => {
       document.body.style.overflow = "";
       document.body.removeAttribute('data-scroll-lock');
 
-      // Remove touch listener
-      if (document.body.getAttribute('data-scroll-listener')) {
-        const preventScroll = (e: TouchEvent) => {
-          const target = e.target as HTMLElement;
-          if (!target.closest('nav')) {
-            e.preventDefault();
-          }
-        };
-        document.body.removeEventListener('touchmove', preventScroll);
-        document.body.removeAttribute('data-scroll-listener');
+      // Remove touch listener using the stored reference
+      if (preventScrollRef.current) {
+        document.body.removeEventListener('touchmove', preventScrollRef.current);
+        preventScrollRef.current = null;
       }
 
       // Restore scroll position if needed
@@ -293,7 +288,12 @@ const Header: React.FC<HeaderProps> = ({ pathname = "/" }) => {
       document.documentElement.style.overflow = "";
       document.body.style.overflow = "";
       document.body.removeAttribute('data-scroll-lock');
-      document.body.removeAttribute('data-scroll-listener');
+
+      // Remove listener if still attached
+      if (preventScrollRef.current) {
+        document.body.removeEventListener('touchmove', preventScrollRef.current);
+        preventScrollRef.current = null;
+      }
     };
   }, [isMenuOpen]);
 
