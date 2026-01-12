@@ -83,6 +83,9 @@ const Nav = styled.nav<{ $isOpen: boolean }>`
     bottom: 0;
     width: 300px;
     max-width: 80vw;
+    height: 100%;
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
     background: ${theme.colors.background};
     border-left: 1px solid ${theme.colors.primary};
     box-shadow: -4px 0 24px rgba(0, 255, 136, 0.1);
@@ -95,6 +98,7 @@ const Nav = styled.nav<{ $isOpen: boolean }>`
     z-index: ${theme.zIndex.modal};
     overflow-y: auto;
     overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
   }
 `;
 
@@ -202,13 +206,19 @@ const Overlay = styled.div<{ $isOpen: boolean }>`
     left: 0;
     right: 0;
     bottom: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
     background: #000000;
     backdrop-filter: blur(10px);
-    opacity: ${props => props.$isOpen ? 1 : 0};
+    opacity: ${props => props.$isOpen ? 0.98 : 0};
     pointer-events: ${props => props.$isOpen ? "all" : "none"};
     transition: opacity ${theme.transitions.normal};
     z-index: ${theme.zIndex.modal - 1};
     overflow: hidden;
+    -webkit-overflow-scrolling: touch;
+    touch-action: none;
   }
 `;
 
@@ -235,19 +245,36 @@ const Header: React.FC<HeaderProps> = ({ pathname = "/" }) => {
   }, [pathname]);
 
   useEffect(() => {
-    // Prevent scroll when menu is open
+    // Prevent scroll when menu is open (iOS Safari compatible)
     if (isMenuOpen) {
       const scrollY = window.scrollY;
+
+      // Lock scroll on both html and body for iOS Safari
+      document.documentElement.style.overflow = "hidden";
+      document.documentElement.style.height = "100%";
       document.body.style.position = "fixed";
       document.body.style.top = `-${scrollY}px`;
+      document.body.style.left = "0";
+      document.body.style.right = "0";
       document.body.style.width = "100%";
       document.body.style.overflow = "hidden";
+      document.body.style.height = "100%";
+      document.body.style.touchAction = "none";
     } else {
       const scrollY = document.body.style.top;
+
+      // Restore scroll
+      document.documentElement.style.overflow = "";
+      document.documentElement.style.height = "";
       document.body.style.position = "";
       document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
       document.body.style.width = "";
       document.body.style.overflow = "";
+      document.body.style.height = "";
+      document.body.style.touchAction = "";
+
       if (scrollY) {
         window.scrollTo(0, parseInt(scrollY || "0") * -1);
       }
@@ -295,12 +322,11 @@ const Header: React.FC<HeaderProps> = ({ pathname = "/" }) => {
         </Container>
       </HeaderWrapper>
 
-      {isMenuOpen && (
-        <Overlay
-          onClick={() => setIsMenuOpen(false)}
-          aria-hidden="true"
-        />
-      )}
+      <Overlay
+        $isOpen={isMenuOpen}
+        onClick={() => setIsMenuOpen(false)}
+        aria-hidden="true"
+      />
     </>
   );
 };
