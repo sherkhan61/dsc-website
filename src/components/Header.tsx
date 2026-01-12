@@ -236,20 +236,19 @@ const Header: React.FC<HeaderProps> = ({ pathname = "/" }) => {
   }, [pathname]);
 
   useEffect(() => {
-    // Prevent scroll when menu is open (iOS Safari compatible)
+    // Prevent scroll when menu is open
     if (isMenuOpen) {
       // Save current scroll position
       const scrollY = window.scrollY;
       document.body.setAttribute('data-scroll-lock', scrollY.toString());
 
-      // Apply scroll lock
+      // Simple scroll lock - just overflow hidden
       document.documentElement.style.overflow = "hidden";
       document.body.style.overflow = "hidden";
-      document.body.style.position = "fixed";
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.left = "0";
-      document.body.style.right = "0";
-      document.body.style.width = "100%";
+
+      // Prevent iOS Safari bounce/overscroll
+      document.body.style.position = "relative";
+      document.body.style.height = "100%";
     } else {
       // Restore scroll
       const scrollY = document.body.getAttribute('data-scroll-lock');
@@ -257,15 +256,17 @@ const Header: React.FC<HeaderProps> = ({ pathname = "/" }) => {
       document.documentElement.style.overflow = "";
       document.body.style.overflow = "";
       document.body.style.position = "";
-      document.body.style.top = "";
-      document.body.style.left = "";
-      document.body.style.right = "";
-      document.body.style.width = "";
+      document.body.style.height = "";
       document.body.removeAttribute('data-scroll-lock');
 
-      // Restore scroll position
+      // Restore scroll position if needed
       if (scrollY) {
-        window.scrollTo(0, parseInt(scrollY));
+        const currentScroll = window.scrollY;
+        const savedScroll = parseInt(scrollY);
+        // Only restore if position changed significantly
+        if (Math.abs(currentScroll - savedScroll) > 10) {
+          window.scrollTo(0, savedScroll);
+        }
       }
     }
 
@@ -274,10 +275,7 @@ const Header: React.FC<HeaderProps> = ({ pathname = "/" }) => {
       document.documentElement.style.overflow = "";
       document.body.style.overflow = "";
       document.body.style.position = "";
-      document.body.style.top = "";
-      document.body.style.left = "";
-      document.body.style.right = "";
-      document.body.style.width = "";
+      document.body.style.height = "";
       document.body.removeAttribute('data-scroll-lock');
     };
   }, [isMenuOpen]);
