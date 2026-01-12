@@ -3,12 +3,12 @@ import { Link } from "gatsby";
 import styled from "styled-components";
 import { theme } from "../styles/GlobalStyles";
 
-const HeaderWrapper = styled.header<{ $isScrolled: boolean }>`
+const HeaderWrapper = styled.header<{ $isScrolled: boolean; $menuOpen: boolean }>`
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  z-index: ${theme.zIndex.sticky};
+  z-index: ${props => props.$menuOpen ? theme.zIndex.modal + 10 : theme.zIndex.sticky};
   background: ${props => props.$isScrolled ? theme.colors.surfaceGlass : "transparent"};
   backdrop-filter: ${props => props.$isScrolled ? "blur(20px) saturate(180%)" : "none"};
   border-bottom: ${props => props.$isScrolled ? `1px solid ${theme.colors.border}` : "none"};
@@ -295,7 +295,7 @@ const Header: React.FC<HeaderProps> = ({ pathname = "/" }) => {
         aria-hidden="true"
       />
 
-      <HeaderWrapper $isScrolled={isScrolled}>
+      <HeaderWrapper $isScrolled={isScrolled} $menuOpen={isMenuOpen}>
         <Container>
           <Logo to="/" aria-label="Digital Security Center - Главная">
             Центр цифровой безопасности
