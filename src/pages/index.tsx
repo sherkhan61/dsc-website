@@ -58,11 +58,11 @@ const Badge = styled.div`
 `;
 
 const HeroTitle = styled.h1`
-  font-size: clamp(3rem, 8vw, 6.5rem);
-  font-weight: 800;
-  line-height: 1.05;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 600;
+  line-height: 1.2;
   margin-bottom: ${theme.spacing.xl};
-  letter-spacing: -0.04em;
+  letter-spacing: -0.02em;
   animation: fadeInUp 1s ease-out 0.2s both;
 
   @keyframes fadeInUp {
@@ -77,18 +77,10 @@ const HeroTitle = styled.h1`
   }
 
   span {
-    background: linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.accent} 50%, ${theme.colors.accentPurple} 100%);
+    background: linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.accentCyan} 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    background-size: 200% auto;
-    animation: shimmer 3s linear infinite;
-  }
-
-  @keyframes shimmer {
-    to {
-      background-position: 200% center;
-    }
   }
 `;
 
