@@ -63,12 +63,8 @@ const HeroTitle = styled.h1`
   line-height: 1.2;
   margin-bottom: ${theme.spacing.xl};
   letter-spacing: -0.02em;
-  background: linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.accentCyan} 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  background-size: 200% auto;
-  animation: fadeInUp 1s ease-out 0.2s both, shimmer 3s linear infinite;
+  color: ${theme.colors.text};
+  animation: fadeInUp 1s ease-out 0.2s both;
 
   @keyframes fadeInUp {
     from {
@@ -79,6 +75,15 @@ const HeroTitle = styled.h1`
       opacity: 1;
       transform: translateY(0);
     }
+  }
+
+  span {
+    background: linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.accentCyan} 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    background-size: 200% auto;
+    animation: shimmer 3s linear infinite;
   }
 
   @keyframes shimmer {
@@ -402,7 +407,7 @@ const IndexPage: React.FC = () => {
         <HeroContent>
           <Badge>Аккредитованная лаборатория НАО «НЦЭ РК»</Badge>
           <HeroTitle>
-            Испытания информационной безопасности
+            Испытания <span>информационной безопасности</span>
           </HeroTitle>
           <HeroDescription>
             Аккредитованная лаборатория с многолетним опытом в области анализа кода,
