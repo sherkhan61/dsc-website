@@ -109,7 +109,8 @@ const ValuesGrid = styled.div`
 
 const ValueCard = styled.div`
   padding: ${theme.spacing.xl};
-  background: ${theme.colors.background};
+  background: ${theme.colors.surfaceGlass};
+  backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid ${theme.colors.border};
   border-radius: ${theme.borderRadius.md};
   text-align: center;
@@ -118,6 +119,7 @@ const ValueCard = styled.div`
   &:hover {
     border-color: ${theme.colors.primary};
     transform: translateY(-4px);
+    box-shadow: ${theme.shadows.glow};
   }
 `;
 

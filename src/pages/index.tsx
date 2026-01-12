@@ -63,12 +63,8 @@ const HeroTitle = styled.h1`
   line-height: 1.2;
   margin-bottom: ${theme.spacing.xl};
   letter-spacing: -0.02em;
-  background: linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.accentCyan} 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  background-size: 200% auto;
-  animation: fadeInUp 1s ease-out 0.2s both, shimmer 3s linear infinite;
+  color: ${theme.colors.text};
+  animation: fadeInUp 1s ease-out 0.2s both;
 
   @keyframes fadeInUp {
     from {
@@ -79,6 +75,15 @@ const HeroTitle = styled.h1`
       opacity: 1;
       transform: translateY(0);
     }
+  }
+
+  span {
+    background: linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.accentCyan} 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    background-size: 200% auto;
+    animation: shimmer 3s linear infinite;
   }
 
   @keyframes shimmer {
@@ -369,6 +374,12 @@ const IndexPage: React.FC = () => {
       description: "Проверка соответствия процессов обеспечения информационной безопасности требованиям нормативных правовых актов и стандартов в сфере обеспечения информационной безопасности, сканирование серверов, виртуальных ресурсов и сетевого оборудования программными средствами на наличие известных уязвимостей и формирование рекомендаций по их устранению.",
       path: "/contacts",
     },
+    {
+      icon: "📋",
+      title: "Подготовка к испытаниям",
+      description: "Полный цикл подготовительных мероприятий для объектов информационных систем к процедуре сертификационных испытаний. Включает предварительную диагностику, подготовку технической документации, инструктаж сотрудников, исправление обнаруженных несоответствий и консультационное сопровождение по нормативным требованиям.",
+      path: "/contacts",
+    },
   ];
 
   const stats = [
@@ -396,7 +407,7 @@ const IndexPage: React.FC = () => {
         <HeroContent>
           <Badge>Аккредитованная лаборатория НАО «НЦЭ РК»</Badge>
           <HeroTitle>
-            Испытания информационной безопасности
+            Испытания <span>информационной безопасности</span>
           </HeroTitle>
           <HeroDescription>
             Аккредитованная лаборатория с многолетним опытом в области анализа кода,
