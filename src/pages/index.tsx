@@ -1,9 +1,76 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "gatsby";
 import styled from "styled-components";
 import Layout from "../components/Layout";
 import SEO from "../components/SEO";
 import { theme } from "../styles/GlobalStyles";
+
+// Service type images
+import codeAnalysisImg from "../images/code-analysis.jpg";
+import securityTestingImg from "../images/security-testing.jpg";
+import stressTestImg from "../images/stress-test.jpg";
+import networkAuditImg from "../images/network-audit.jpg";
+import securityProcessesImg from "../images/security-processes.jpg";
+import preparationTestingImg from "../images/preparation-testing.jpg";
+
+// Animated counter component
+const AnimatedCounter: React.FC<{ value: string }> = ({ value }) => {
+  const [displayValue, setDisplayValue] = useState("0");
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const elementRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (hasAnimated) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setHasAnimated(true);
+          animateValue();
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    if (elementRef.current) {
+      observer.observe(elementRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [hasAnimated]);
+
+  const animateValue = () => {
+    // Parse the value
+    const numMatch = value.match(/\d+/);
+    if (!numMatch) {
+      setDisplayValue(value);
+      return;
+    }
+
+    const targetNum = parseInt(numMatch[0], 10);
+    const suffix = value.replace(numMatch[0], "");
+    const duration = 2000; // 2 seconds
+    const steps = 60;
+    const increment = targetNum / steps;
+    let current = 0;
+    let step = 0;
+
+    const timer = setInterval(() => {
+      step++;
+      current = Math.min(current + increment, targetNum);
+
+      if (step >= steps || current >= targetNum) {
+        setDisplayValue(targetNum + suffix);
+        clearInterval(timer);
+      } else {
+        setDisplayValue(Math.floor(current) + suffix);
+      }
+    }, duration / steps);
+  };
+
+  return <div ref={elementRef}>{displayValue}</div>;
+};
 
 const Hero = styled.section`
   position: relative;
@@ -110,7 +177,7 @@ const HeroCTA = styled.div`
   animation: fadeInUp 1s ease-out 0.6s both;
 `;
 
-const PrimaryButton = styled(Link)`
+const PrimaryButton = styled(Link as any)`
   padding: ${theme.spacing.md} ${theme.spacing["3xl"]};
   background: linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.accent} 100%);
   color: ${theme.colors.background};
@@ -166,7 +233,7 @@ const PrimaryButton = styled(Link)`
   }
 `;
 
-const SecondaryButton = styled(Link)`
+const SecondaryButton = styled(Link as any)`
   padding: ${theme.spacing.md} ${theme.spacing["2xl"]};
   background: ${theme.colors.surfaceGlass};
   backdrop-filter: blur(20px) saturate(180%);
@@ -218,89 +285,58 @@ const SectionTitle = styled.h2`
 
 const ServicesGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: ${theme.spacing["2xl"]};
   margin-top: ${theme.spacing["3xl"]};
+
+  @media (max-width: ${theme.breakpoints.tablet}) {
+    grid-template-columns: 1fr;
+    gap: ${theme.spacing.xl};
+  }
 `;
 
-const ServiceCard = styled(Link)`
-  padding: ${theme.spacing["3xl"]};
-  background: ${theme.colors.surfaceGlass};
-  backdrop-filter: blur(20px) saturate(180%);
+const ServiceCard = styled.div`
+  background: ${theme.colors.surface};
   border: 1px solid ${theme.colors.border};
-  border-radius: ${theme.borderRadius["2xl"]};
-  text-decoration: none;
-  transition: all ${theme.transitions.normal};
-  position: relative;
+  border-radius: ${theme.borderRadius.xl};
   overflow: hidden;
+  transition: all ${theme.transitions.normal};
   display: flex;
   flex-direction: column;
-  gap: ${theme.spacing.lg};
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, ${theme.colors.primary}, ${theme.colors.accent}, ${theme.colors.accentPurple});
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform ${theme.transitions.normal};
-  }
-
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, ${theme.colors.accent}15 0%, ${theme.colors.accentPurple}10 100%);
-    opacity: 0;
-    transition: opacity ${theme.transitions.normal};
-  }
 
   &:hover {
+    transform: translateY(-4px);
+    box-shadow: ${theme.shadows.lg};
     border-color: ${theme.colors.borderHover};
-    transform: translateY(-8px);
-    box-shadow: ${theme.shadows.glowAccent};
-
-    &::before {
-      transform: scaleX(1);
-    }
-
-    &::after {
-      opacity: 1;
-    }
-  }
-
-  h3 {
-    font-size: ${theme.fontSizes["2xl"]};
-    margin-bottom: ${theme.spacing.md};
-    color: ${theme.colors.text};
-    position: relative;
-    z-index: 1;
-  }
-
-  p {
-    color: ${theme.colors.textSecondary};
-    line-height: 1.7;
-    margin-bottom: 0;
-    position: relative;
-    z-index: 1;
   }
 `;
 
-const Icon = styled.div`
-  width: 56px;
-  height: 56px;
-  border-radius: ${theme.borderRadius.lg};
-  background: linear-gradient(135deg, ${theme.colors.primary}20 0%, ${theme.colors.accent}20 100%);
+const ServiceImage = styled.div<{ $image: string }>`
+  width: 100%;
+  height: 240px;
+  background-image: url(${props => props.$image});
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  @media (max-width: ${theme.breakpoints.tablet}) {
+    height: 200px;
+  }
+`;
+
+const ServiceContent = styled.div`
+  padding: ${theme.spacing.xl};
   display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: ${theme.fontSizes["3xl"]};
-  position: relative;
-  z-index: 1;
+  flex-direction: column;
+  gap: ${theme.spacing.md};
+  flex: 1;
+`;
+
+const ServiceDescription = styled.p`
+  font-size: ${theme.fontSizes.sm};
+  color: ${theme.colors.textSecondary};
+  line-height: 1.6;
+  margin: 0;
 `;
 
 const StatsSection = styled.div`
@@ -345,40 +381,28 @@ const StatLabel = styled.div`
 const IndexPage: React.FC = () => {
   const services = [
     {
-      icon: "🔍",
-      title: "Анализ исходного кода",
       description: "Проверка с целью выявления уязвимостей ПО в соответствии с международными классификациями уязвимостей (CWE, OWASP Top 10, OWASP Mobile Top 10, OWASP API Top 10), международными базами данных уязвимостей (CVE, NIST) и стандартом Республики Казахстан 15408-3.",
-      path: "/contacts",
+      image: codeAnalysisImg,
     },
     {
-      icon: "🛡️",
-      title: "Испытания функций безопасности",
       description: "Проверка защитных механизмов серверов и виртуальных ресурсов на соответствие технической документации и нормативным актам РК в области информационной безопасности.",
-      path: "/contacts",
+      image: securityTestingImg,
     },
     {
-      icon: "⚡",
-      title: "Нагрузочное тестирование",
       description: "Оценка соблюдения требований доступности, целостности и конфиденциальности объекта испытаний с применением специализированного ПО в условиях автоматизированных сценариев.",
-      path: "/contacts",
+      image: stressTestImg,
     },
     {
-      icon: "🌐",
-      title: "Проверка сетевой инфраструктуры",
       description: "Комплексный анализ защитных функций сетевой инфраструктуры на соответствие требованиям технической документации и стандартам безопасности.",
-      path: "/contacts",
+      image: networkAuditImg,
     },
     {
-      icon: "🔐",
-      title: "Обследование процессов обеспечения информационной безопасности",
-      description: "Проверка соответствия процессов обеспечения информационной безопасности требованиям нормативных правовых актов и стандартов в сфере обеспечения информационной безопасности, сканирование серверов, виртуальных ресурсов и сетевого оборудования программными средствами на наличие известных уязвимостей и формирование рекомендаций по их устранению.",
-      path: "/contacts",
+      description: "Проверка соответствия процессов обеспечения информационной безопасности требованиям нормативных правовых актов и стандартов в сфере обеспечения информационной безопасности.",
+      image: securityProcessesImg,
     },
     {
-      icon: "📋",
-      title: "Подготовка к испытаниям",
       description: "Полный цикл подготовительных мероприятий для объектов информационных систем к процедуре сертификационных испытаний. Включает предварительную диагностику, подготовку технической документации, инструктаж сотрудников, исправление обнаруженных несоответствий и консультационное сопровождение по нормативным требованиям.",
-      path: "/contacts",
+      image: preparationTestingImg,
     },
   ];
 
@@ -407,7 +431,7 @@ const IndexPage: React.FC = () => {
         <HeroContent>
           <Badge>Аккредитованная лаборатория НАО «НЦЭ РК»</Badge>
           <HeroTitle>
-            Испытания <span>информационной безопасности</span>
+            Испытания <span>информационной безопасности объектов информатизации</span>
           </HeroTitle>
           <HeroDescription>
             Аккредитованная лаборатория с многолетним опытом в области анализа кода,
@@ -428,11 +452,12 @@ const IndexPage: React.FC = () => {
           Виды <span>испытаний</span>
         </SectionTitle>
         <ServicesGrid>
-          {services.map((service) => (
-            <ServiceCard key={service.title} to={service.path}>
-              <Icon>{service.icon}</Icon>
-              <h3>{service.title}</h3>
-              <p>{service.description}</p>
+          {services.map((service, index) => (
+            <ServiceCard key={index}>
+              <ServiceImage $image={service.image} />
+              <ServiceContent>
+                <ServiceDescription>{service.description}</ServiceDescription>
+              </ServiceContent>
             </ServiceCard>
           ))}
         </ServicesGrid>
@@ -445,7 +470,9 @@ const IndexPage: React.FC = () => {
         <StatsSection>
           {stats.map((stat) => (
             <StatCard key={stat.label}>
-              <StatValue>{stat.value}</StatValue>
+              <StatValue>
+                <AnimatedCounter value={stat.value} />
+              </StatValue>
               <StatLabel>{stat.label}</StatLabel>
             </StatCard>
           ))}

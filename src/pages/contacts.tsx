@@ -114,13 +114,6 @@ const InfoValue = styled.a`
   }
 `;
 
-const InfoText = styled.p`
-  font-size: ${theme.fontSizes.base};
-  color: ${theme.colors.textSecondary};
-  line-height: 1.7;
-  margin: 0;
-`;
-
 const AddressText = styled.p`
   font-size: ${theme.fontSizes.base};
   color: ${theme.colors.text};
@@ -169,7 +162,7 @@ const ContactsPage: React.FC = () => {
     <Layout pathname="/contacts">
       <SEO
         title="Контакты — ТОО «Центр цифровой безопасности» | Астана"
-        description="Свяжитесь с нами для заказа услуг информационной безопасности. Адрес: ул. Әлихан Бөкейхан, дом 32, кв.17, г. Астана. Телефон: +7 (7172) 000-000"
+        description="Свяжитесь с нами для заказа услуг информационной безопасности. Адрес: ул. Әлихан Бөкейхан, дом 32, г. Астана. Телефон: +7 (702) 214-00-02"
         pathname="/contacts"
         keywords={[
           "контакты лаборатории",
@@ -193,14 +186,14 @@ const ContactsPage: React.FC = () => {
               <InfoList>
                 <InfoItem>
                   <InfoLabel>Телефон</InfoLabel>
-                  <InfoValue href="tel:+77172000000">
-                    +7 (7172) 000-000
+                  <InfoValue href="tel:+77022140002">
+                    +7 (702) 214-00-02
                   </InfoValue>
                 </InfoItem>
                 <InfoItem>
                   <InfoLabel>Email</InfoLabel>
-                  <InfoValue href="mailto:info@digital-security-center.kz">
-                    info@digital-security-center.kz
+                  <InfoValue href="mailto:info@digisec.kz">
+                    info@digisec.kz
                   </InfoValue>
                 </InfoItem>
               </InfoList>
@@ -218,7 +211,7 @@ const ContactsPage: React.FC = () => {
               <InfoTitle>Юридический адрес</InfoTitle>
               <AddressText>
                 ТОО «Центр цифровой безопасности»<br />
-                улица Әлихан Бөкейхан, дом 32, кв.17<br />
+                улица Әлихан Бөкейхан, дом 32<br />
                 г. Астана, 010000<br />
                 Республика Казахстан
               </AddressText>

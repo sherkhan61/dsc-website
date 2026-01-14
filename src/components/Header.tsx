@@ -29,7 +29,7 @@ const Container = styled.div`
   }
 `;
 
-const Logo = styled(Link)`
+const Logo = styled(Link as any)`
   font-family: ${theme.fonts.display};
   font-size: ${theme.fontSizes.base};
   font-weight: 700;
@@ -100,7 +100,7 @@ const Nav = styled.nav<{ $isOpen: boolean }>`
   }
 `;
 
-const NavLink = styled(Link)`
+const NavLink = styled(Link as any)`
   font-size: ${theme.fontSizes.base};
   font-weight: 500;
   color: ${theme.colors.textSecondary};
@@ -138,7 +138,7 @@ const NavLink = styled(Link)`
   }
 `;
 
-const ContactButton = styled(Link)`
+const ContactButton = styled(Link as any)`
   padding: ${theme.spacing.sm} ${theme.spacing.lg};
   background: ${theme.colors.primary};
   color: ${theme.colors.background};

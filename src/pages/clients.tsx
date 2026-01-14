@@ -45,51 +45,110 @@ const SectionTitle = styled.h2`
   color: ${theme.colors.text};
 `;
 
+const StepsContainer = styled.div`
+  margin-top: ${theme.spacing["3xl"]};
+  overflow: hidden;
+  position: relative;
+
+  @media (max-width: ${theme.breakpoints.tablet}) {
+    overflow: visible;
+  }
+`;
+
+const StepsTrack = styled.div`
+  display: flex;
+  gap: ${theme.spacing.xl};
+  animation: scroll 35s linear infinite;
+  width: fit-content;
+
+  /* Pause animation on hover */
+  &:hover {
+    animation-play-state: paused;
+  }
+
+  @keyframes scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(calc(-100% - ${theme.spacing.xl}));
+    }
+  }
+
+  @media (max-width: ${theme.breakpoints.tablet}) {
+    animation: none;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+`;
+
 const StepsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: ${theme.spacing.xl};
   margin-top: ${theme.spacing["3xl"]};
+
+  @media (min-width: calc(${theme.breakpoints.tablet} + 1px)) {
+    display: none;
+  }
 `;
 
 const StepCard = styled.div`
-  padding: ${theme.spacing["2xl"]};
+  padding: ${theme.spacing.lg} ${theme.spacing.xl};
   background: ${theme.colors.surface};
   border: 1px solid ${theme.colors.border};
   border-radius: ${theme.borderRadius.lg};
   position: relative;
   transition: all ${theme.transitions.normal};
+  min-width: 260px;
+  max-width: 320px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: ${theme.spacing.md};
 
   &:hover {
     border-color: ${theme.colors.primary};
     transform: translateY(-4px);
   }
+
+  @media (max-width: ${theme.breakpoints.tablet}) {
+    min-width: unset;
+    max-width: unset;
+    width: 100%;
+  }
+`;
+
+const StepHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${theme.spacing.md};
 `;
 
 const StepNumber = styled.div`
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   background: ${theme.colors.primaryMuted};
   border: 2px solid ${theme.colors.primary};
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: ${theme.fontSizes["2xl"]};
+  font-size: ${theme.fontSizes.xl};
   font-weight: 700;
   color: ${theme.colors.primary};
-  margin-bottom: ${theme.spacing.lg};
+  flex-shrink: 0;
 `;
 
 const StepTitle = styled.h3`
-  font-size: ${theme.fontSizes.xl};
+  font-size: ${theme.fontSizes.lg};
   font-weight: 700;
   color: ${theme.colors.text};
-  margin-bottom: ${theme.spacing.sm};
+  margin: 0;
 `;
 
 const StepDescription = styled.p`
-  font-size: ${theme.fontSizes.base};
+  font-size: ${theme.fontSizes.sm};
   color: ${theme.colors.textSecondary};
   line-height: 1.7;
   margin: 0;
@@ -201,7 +260,7 @@ const CTADescription = styled.p`
   line-height: 1.7;
 `;
 
-const CTAButton = styled(Link)`
+const CTAButton = styled(Link as any)`
   display: inline-flex;
   align-items: center;
   gap: ${theme.spacing.sm};
@@ -309,11 +368,40 @@ const ClientsPage: React.FC = () => {
       <ContentContainer>
         <ProcessSection>
           <SectionTitle>Этапы сотрудничества</SectionTitle>
+          {/* Desktop: Animated scrolling */}
+          <StepsContainer>
+            <StepsTrack>
+              {/* Original cards */}
+              {steps.map((step) => (
+                <StepCard key={`original-${step.number}`}>
+                  <StepHeader>
+                    <StepNumber>{step.number}</StepNumber>
+                    <StepTitle>{step.title}</StepTitle>
+                  </StepHeader>
+                  <StepDescription>{step.description}</StepDescription>
+                </StepCard>
+              ))}
+              {/* Duplicate cards for seamless loop */}
+              {steps.map((step) => (
+                <StepCard key={`duplicate-${step.number}`}>
+                  <StepHeader>
+                    <StepNumber>{step.number}</StepNumber>
+                    <StepTitle>{step.title}</StepTitle>
+                  </StepHeader>
+                  <StepDescription>{step.description}</StepDescription>
+                </StepCard>
+              ))}
+            </StepsTrack>
+          </StepsContainer>
+
+          {/* Mobile: Static grid */}
           <StepsGrid>
             {steps.map((step) => (
               <StepCard key={step.number}>
-                <StepNumber>{step.number}</StepNumber>
-                <StepTitle>{step.title}</StepTitle>
+                <StepHeader>
+                  <StepNumber>{step.number}</StepNumber>
+                  <StepTitle>{step.title}</StepTitle>
+                </StepHeader>
                 <StepDescription>{step.description}</StepDescription>
               </StepCard>
             ))}

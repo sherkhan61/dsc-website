@@ -1,20 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import styled from "styled-components";
 import { theme } from "../styles/GlobalStyles";
-import {
-  sanitizeFormData,
-  validateEmail,
-  validatePhone,
-  validateName,
-  validateMessage,
-  generateCSRFToken,
-  RateLimiter,
-  type FormData as SecurityFormData,
-} from "../utils/security";
-import { ContactFormData, FormState } from "../types";
-import { postWithRetry, contactApiCircuitBreaker, withTimeout } from "../utils/api";
-import logger from "../utils/logger";
+import { ContactFormData } from "../types";
 
 const FormContainer = styled.div`
   width: 100%;
@@ -37,7 +25,7 @@ const Label = styled.label`
   font-size: ${theme.fontSizes.sm};
   font-weight: 600;
   color: ${theme.colors.text};
-  
+
   span {
     color: ${theme.colors.error};
     margin-left: 2px;
@@ -49,25 +37,17 @@ const Input = styled.input<{ $hasError?: boolean }>`
   background: ${theme.colors.surface};
   border: 1px solid ${props => props.$hasError ? theme.colors.error : theme.colors.border};
   border-radius: ${theme.borderRadius.md};
-  color: ${theme.colors.text};
   font-size: ${theme.fontSizes.base};
-  transition: all ${theme.transitions.fast};
+  color: ${theme.colors.text};
+  transition: border-color ${theme.transitions.fast};
 
   &:focus {
     outline: none;
-    border-color: ${props => props.$hasError ? theme.colors.error : theme.colors.primary};
-    box-shadow: 0 0 0 3px ${props => props.$hasError ? 
-      'rgba(255, 68, 68, 0.1)' : 
-      'rgba(0, 255, 136, 0.1)'};
+    border-color: ${theme.colors.primary};
   }
 
   &::placeholder {
     color: ${theme.colors.textTertiary};
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
   }
 `;
 
@@ -76,450 +56,200 @@ const TextArea = styled.textarea<{ $hasError?: boolean }>`
   background: ${theme.colors.surface};
   border: 1px solid ${props => props.$hasError ? theme.colors.error : theme.colors.border};
   border-radius: ${theme.borderRadius.md};
-  color: ${theme.colors.text};
   font-size: ${theme.fontSizes.base};
-  font-family: ${theme.fonts.body};
+  color: ${theme.colors.text};
   min-height: 150px;
   resize: vertical;
-  transition: all ${theme.transitions.fast};
+  font-family: inherit;
+  transition: border-color ${theme.transitions.fast};
 
   &:focus {
     outline: none;
-    border-color: ${props => props.$hasError ? theme.colors.error : theme.colors.primary};
-    box-shadow: 0 0 0 3px ${props => props.$hasError ? 
-      'rgba(255, 68, 68, 0.1)' : 
-      'rgba(0, 255, 136, 0.1)'};
+    border-color: ${theme.colors.primary};
   }
 
   &::placeholder {
     color: ${theme.colors.textTertiary};
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
   }
 `;
 
 const ErrorMessage = styled.span`
   font-size: ${theme.fontSizes.sm};
   color: ${theme.colors.error};
-  display: flex;
-  align-items: center;
-  gap: ${theme.spacing.xs};
-
-  &::before {
-    content: "⚠";
-  }
-`;
-
-const SuccessMessage = styled.div`
-  padding: ${theme.spacing.md};
-  background: rgba(0, 255, 136, 0.1);
-  border: 1px solid ${theme.colors.success};
-  border-radius: ${theme.borderRadius.md};
-  color: ${theme.colors.success};
-  font-size: ${theme.fontSizes.sm};
-  display: flex;
-  align-items: center;
-  gap: ${theme.spacing.sm};
-
-  &::before {
-    content: "✓";
-    font-weight: bold;
-    font-size: ${theme.fontSizes.lg};
-  }
-`;
-
-const GeneralErrorMessage = styled.div`
-  padding: ${theme.spacing.md};
-  background: rgba(255, 68, 68, 0.1);
-  border: 1px solid ${theme.colors.error};
-  border-radius: ${theme.borderRadius.md};
-  color: ${theme.colors.error};
-  font-size: ${theme.fontSizes.sm};
 `;
 
 const SubmitButton = styled.button`
   padding: ${theme.spacing.md} ${theme.spacing.xl};
   background: ${theme.colors.primary};
   color: ${theme.colors.background};
-  font-size: ${theme.fontSizes.base};
+  font-size: ${theme.fontSizes.lg};
   font-weight: 600;
   border: none;
   border-radius: ${theme.borderRadius.md};
   cursor: pointer;
-  transition: background ${theme.transitions.fast}, box-shadow ${theme.transitions.fast};
+  transition: all ${theme.transitions.fast};
 
-  &:hover:not(:disabled) {
+  &:hover {
     background: ${theme.colors.primaryHover};
+    transform: translateY(-2px);
     box-shadow: ${theme.shadows.glow};
-    color: ${theme.colors.text};
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 
   &:disabled {
-    opacity: 0.5;
+    background: ${theme.colors.border};
     cursor: not-allowed;
-  }
-
-  &:focus-visible {
-    outline: 2px solid ${theme.colors.primary};
-    outline-offset: 2px;
+    transform: none;
   }
 `;
 
-const HelpText = styled.span`
-  font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.textTertiary};
+const InfoBox = styled.div`
+  padding: ${theme.spacing.md};
+  background: ${theme.colors.primaryMuted};
+  border: 1px solid ${theme.colors.primary};
+  border-radius: ${theme.borderRadius.md};
+  font-size: ${theme.fontSizes.sm};
+  color: ${theme.colors.textSecondary};
+  line-height: 1.6;
 `;
 
-// Rate limiter instance (3 submissions per minute)
-const rateLimiter = new RateLimiter(3, 60000);
-
-interface ContactFormProps {
-  onSuccess?: () => void;
-  submitEndpoint?: string;
-}
-
-const ContactForm: React.FC<ContactFormProps> = ({
-  onSuccess,
-  submitEndpoint = "/.netlify/functions/contact"
-}) => {
-  const [formState, setFormState] = useState<FormState>({
-    isSubmitting: false,
-    isSuccess: false,
-    isError: false,
-    errors: {},
-  });
-
-  const [csrfToken, setCsrfToken] = useState<string>("");
-  const [clientId] = useState<string>(() => 
-    typeof window !== "undefined" ? 
-      sessionStorage.getItem("clientId") || generateCSRFToken() : 
-      ""
-  );
-
+const ContactForm: React.FC = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm<ContactFormData>();
 
-  // Generate CSRF token on mount
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const token = generateCSRFToken();
-      setCsrfToken(token);
-      
-      // Store client ID for rate limiting
-      if (!sessionStorage.getItem("clientId")) {
-        sessionStorage.setItem("clientId", clientId);
-      }
-    }
-  }, [clientId]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const onSubmit: SubmitHandler<ContactFormData> = async (data) => {
-    // Reset states
-    setFormState({
-      isSubmitting: true,
-      isSuccess: false,
-      isError: false,
-      errors: {},
-    });
+  const onSubmit: SubmitHandler<ContactFormData> = (data) => {
+    setIsSubmitting(true);
 
-    // Rate limiting check
-    if (!rateLimiter.isAllowed(clientId)) {
-      setFormState({
-        isSubmitting: false,
-        isSuccess: false,
-        isError: true,
-        errors: {
-          general: "Слишком много попыток. Пожалуйста, подождите минуту.",
-        },
-      });
-      return;
-    }
+    // Формируем тело письма
+    const subject = encodeURIComponent(`Обращение от ${data.name}`);
+    const body = encodeURIComponent(
+      `Имя: ${data.name}\n` +
+      `Email: ${data.email}\n` +
+      `Телефон: ${data.phone || 'не указан'}\n` +
+      `Компания: ${data.company || 'не указана'}\n\n` +
+      `Сообщение:\n${data.message}`
+    );
 
-    // Client-side validation and sanitization
-    const sanitizedData = sanitizeFormData({
-      name: data.name,
-      email: data.email,
-      phone: data.phone,
-      message: data.message,
-    });
+    // Открываем почтовый клиент
+    window.location.href = `mailto:info@digisec.kz?subject=${subject}&body=${body}`;
 
-    if (!sanitizedData) {
-      setFormState({
-        isSubmitting: false,
-        isSuccess: false,
-        isError: true,
-        errors: {
-          general: "Пожалуйста, проверьте правильность заполнения всех полей.",
-        },
-      });
-      return;
-    }
-
-    try {
-      logger.info('Contact form submission started', {
-        endpoint: submitEndpoint,
-        hasCSRF: !!csrfToken,
-      });
-
-      // Send request to Netlify Function with retry logic and timeout
-      const response = await contactApiCircuitBreaker.execute(() =>
-        withTimeout(
-          postWithRetry(
-            submitEndpoint,
-            {
-              ...sanitizedData,
-              csrfToken,
-              timestamp: Date.now(),
-            },
-            {
-              headers: {
-                "X-CSRF-Token": csrfToken,
-              },
-            },
-            {
-              maxRetries: 3,
-              baseDelay: 1000,
-              maxDelay: 5000,
-              shouldRetry: (error, attempt) => {
-                // Only retry on network errors or 5xx errors
-                if (!error.response) return true;
-                const status = error.response?.status;
-                return status >= 500 && status < 600;
-              },
-            }
-          ),
-          30000, // 30 second timeout
-          'Превышено время ожидания ответа сервера'
-        )
-      );
-
-      const responseData = await response.json();
-
-      if (!response.ok) {
-        // Handle specific error responses
-        let errorMessage = "Произошла ошибка при отправке формы. Пожалуйста, попробуйте позже.";
-
-        if (response.status === 429) {
-          errorMessage = responseData.error || "Слишком много попыток. Пожалуйста, подождите минуту.";
-          logger.warn('Rate limit exceeded on contact form', {
-            status: response.status,
-          });
-        } else if (response.status === 403) {
-          errorMessage = responseData.error || "Ошибка безопасности. Пожалуйста, обновите страницу.";
-          logger.warn('CSRF validation failed', {
-            status: response.status,
-          });
-        } else if (response.status === 400) {
-          errorMessage = responseData.error || "Пожалуйста, проверьте правильность заполнения всех полей.";
-          // Show validation details if available
-          if (responseData.details && Array.isArray(responseData.details)) {
-            errorMessage += "\n" + responseData.details.join(". ");
-          }
-          logger.warn('Form validation failed', {
-            status: response.status,
-            details: responseData.details,
-          });
-        } else {
-          logger.error(
-            'Contact form submission failed',
-            new Error(`HTTP ${response.status}: ${response.statusText}`),
-            {
-              status: response.status,
-              statusText: response.statusText,
-              responseData,
-            }
-          );
-        }
-
-        setFormState({
-          isSubmitting: false,
-          isSuccess: false,
-          isError: true,
-          errors: {
-            general: errorMessage,
-          },
-        });
-        return;
-      }
-
-      // Success
-      logger.info('Contact form submission successful', {
-        status: response.status,
-      });
-
-      setFormState({
-        isSubmitting: false,
-        isSuccess: true,
-        isError: false,
-        errors: {},
-      });
-
-      reset();
-
-      // Generate new CSRF token
-      setCsrfToken(generateCSRFToken());
-
-      if (onSuccess) {
-        onSuccess();
-      }
-    } catch (error: any) {
-      logger.error('Contact form submission error', error, {
-        endpoint: submitEndpoint,
-        errorMessage: error.message,
-      });
-
-      let errorMessage = "Ошибка сети. Пожалуйста, проверьте подключение к интернету и попробуйте снова.";
-
-      // Handle circuit breaker errors
-      if (error.message === 'Circuit breaker is open') {
-        errorMessage = "Сервис временно недоступен. Пожалуйста, попробуйте через минуту.";
-      } else if (error.message.includes('timeout')) {
-        errorMessage = "Превышено время ожидания. Пожалуйста, попробуйте еще раз.";
-      }
-
-      setFormState({
-        isSubmitting: false,
-        isSuccess: false,
-        isError: true,
-        errors: {
-          general: errorMessage,
-        },
-      });
-    }
+    setTimeout(() => {
+      setIsSubmitting(false);
+    }, 1000);
   };
 
   return (
     <FormContainer>
-      <Form onSubmit={handleSubmit(onSubmit)} noValidate>
-        {formState.isSuccess && (
-          <SuccessMessage role="alert">
-            Спасибо за обращение! Мы свяжемся с вами в ближайшее время.
-          </SuccessMessage>
-        )}
+      <InfoBox>
+        После нажатия кнопки "Отправить сообщение" откроется ваш почтовый клиент.
+        Вы также можете написать нам напрямую на <strong>info@digisec.kz</strong>
+      </InfoBox>
 
-        {formState.errors.general && (
-          <GeneralErrorMessage role="alert">
-            {formState.errors.general}
-          </GeneralErrorMessage>
-        )}
-
+      <Form onSubmit={handleSubmit(onSubmit)}>
         <FormGroup>
           <Label htmlFor="name">
-            Имя<span aria-label="обязательное поле">*</span>
+            Ваше имя<span>*</span>
           </Label>
           <Input
             id="name"
             type="text"
-            placeholder="Ваше имя"
+            placeholder="Введите ваше имя"
             $hasError={!!errors.name}
-            disabled={formState.isSubmitting}
-            aria-invalid={!!errors.name}
-            aria-describedby={errors.name ? "name-error" : undefined}
             {...register("name", {
               required: "Имя обязательно для заполнения",
-              validate: (value) =>
-                validateName(value) || "Введите корректное имя (минимум 2 символа)",
+              minLength: {
+                value: 2,
+                message: "Имя должно содержать минимум 2 символа",
+              },
+              maxLength: {
+                value: 100,
+                message: "Имя не должно превышать 100 символов",
+              },
             })}
           />
-          {errors.name && (
-            <ErrorMessage id="name-error" role="alert">
-              {errors.name.message}
-            </ErrorMessage>
-          )}
+          {errors.name && <ErrorMessage>{errors.name.message}</ErrorMessage>}
         </FormGroup>
 
         <FormGroup>
           <Label htmlFor="email">
-            Email<span aria-label="обязательное поле">*</span>
+            Email<span>*</span>
           </Label>
           <Input
             id="email"
             type="email"
-            placeholder="example@company.kz"
+            placeholder="your@email.com"
             $hasError={!!errors.email}
-            disabled={formState.isSubmitting}
-            aria-invalid={!!errors.email}
-            aria-describedby={errors.email ? "email-error" : undefined}
             {...register("email", {
               required: "Email обязателен для заполнения",
-              validate: (value) =>
-                validateEmail(value) || "Введите корректный email адрес",
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: "Введите корректный email адрес",
+              },
             })}
           />
-          {errors.email && (
-            <ErrorMessage id="email-error" role="alert">
-              {errors.email.message}
-            </ErrorMessage>
-          )}
+          {errors.email && <ErrorMessage>{errors.email.message}</ErrorMessage>}
         </FormGroup>
 
         <FormGroup>
-          <Label htmlFor="phone">
-            Телефон<span aria-label="обязательное поле">*</span>
-          </Label>
+          <Label htmlFor="phone">Телефон</Label>
           <Input
             id="phone"
             type="tel"
-            placeholder="+7 (7172) 000-000"
+            placeholder="+7 (___) ___-__-__"
             $hasError={!!errors.phone}
-            disabled={formState.isSubmitting}
-            aria-invalid={!!errors.phone}
-            aria-describedby={errors.phone ? "phone-error phone-help" : "phone-help"}
             {...register("phone", {
-              required: "Телефон обязателен для заполнения",
-              validate: (value) =>
-                validatePhone(value) || "Введите корректный номер телефона",
+              pattern: {
+                value: /^(\+7|8)?[\s-]?\(?[0-9]{3}\)?[\s-]?[0-9]{3}[\s-]?[0-9]{2}[\s-]?[0-9]{2}$/,
+                message: "Введите корректный номер телефона",
+              },
             })}
           />
-          <HelpText id="phone-help">
-            Формат: +7XXXXXXXXXX или 8XXXXXXXXXX
-          </HelpText>
-          {errors.phone && (
-            <ErrorMessage id="phone-error" role="alert">
-              {errors.phone.message}
-            </ErrorMessage>
-          )}
+          {errors.phone && <ErrorMessage>{errors.phone.message}</ErrorMessage>}
+        </FormGroup>
+
+        <FormGroup>
+          <Label htmlFor="company">Компания</Label>
+          <Input
+            id="company"
+            type="text"
+            placeholder="Название вашей компании"
+            {...register("company")}
+          />
         </FormGroup>
 
         <FormGroup>
           <Label htmlFor="message">
-            Сообщение<span aria-label="обязательное поле">*</span>
+            Сообщение<span>*</span>
           </Label>
           <TextArea
             id="message"
-            placeholder="Опишите ваш запрос..."
+            placeholder="Опишите ваш вопрос или запрос..."
             $hasError={!!errors.message}
-            disabled={formState.isSubmitting}
-            aria-invalid={!!errors.message}
-            aria-describedby={errors.message ? "message-error message-help" : "message-help"}
             {...register("message", {
               required: "Сообщение обязательно для заполнения",
-              validate: (value) =>
-                validateMessage(value) || "Сообщение должно содержать от 10 до 2000 символов",
+              minLength: {
+                value: 10,
+                message: "Сообщение должно содержать минимум 10 символов",
+              },
+              maxLength: {
+                value: 2000,
+                message: "Сообщение не должно превышать 2000 символов",
+              },
             })}
           />
-          <HelpText id="message-help">
-            Минимум 10 символов
-          </HelpText>
-          {errors.message && (
-            <ErrorMessage id="message-error" role="alert">
-              {errors.message.message}
-            </ErrorMessage>
-          )}
+          {errors.message && <ErrorMessage>{errors.message.message}</ErrorMessage>}
         </FormGroup>
 
-        <SubmitButton
-          type="submit"
-          disabled={formState.isSubmitting}
-          aria-busy={formState.isSubmitting}
-        >
-          {formState.isSubmitting ? "Отправка..." : "Отправить"}
+        <SubmitButton type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Открытие почтового клиента..." : "Отправить сообщение"}
         </SubmitButton>
       </Form>
     </FormContainer>
