@@ -44,7 +44,8 @@ const config: GatsbyConfig = {
   },
 
   // GraphQL type generation
-  graphqlTypegen: true,
+  // Disabled due to ImageSharp type conflicts with disabled plugins
+  graphqlTypegen: false,
 
   plugins: [
     "gatsby-plugin-react-helmet",
