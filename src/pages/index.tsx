@@ -11,6 +11,7 @@ import securityTestingImg from "../images/security-testing.jpg";
 import stressTestImg from "../images/stress-test.jpg";
 import networkAuditImg from "../images/network-audit.jpg";
 import securityProcessesImg from "../images/security-processes.jpg";
+import preparationTestingImg from "../images/preparation-testing.jpg";
 
 const Hero = styled.section`
   position: relative;
@@ -272,14 +273,6 @@ const ServiceContent = styled.div`
   flex: 1;
 `;
 
-const ServiceTitle = styled.h3`
-  font-size: ${theme.fontSizes.xl};
-  font-weight: 700;
-  color: ${theme.colors.text};
-  margin: 0;
-  line-height: 1.3;
-`;
-
 const ServiceDescription = styled.p`
   font-size: ${theme.fontSizes.sm};
   color: ${theme.colors.textSecondary};
@@ -329,29 +322,28 @@ const StatLabel = styled.div`
 const IndexPage: React.FC = () => {
   const services = [
     {
-      title: "Анализ исходного кода",
       description: "Проверка с целью выявления уязвимостей ПО в соответствии с международными классификациями уязвимостей (CWE, OWASP Top 10, OWASP Mobile Top 10, OWASP API Top 10), международными базами данных уязвимостей (CVE, NIST) и стандартом Республики Казахстан 15408-3.",
       image: codeAnalysisImg,
     },
     {
-      title: "Испытание функций безопасности",
       description: "Проверка защитных механизмов серверов и виртуальных ресурсов на соответствие технической документации и нормативным актам РК в области информационной безопасности.",
       image: securityTestingImg,
     },
     {
-      title: "Нагрузочное тестирование",
       description: "Оценка соблюдения требований доступности, целостности и конфиденциальности объекта испытаний с применением специализированного ПО в условиях автоматизированных сценариев.",
       image: stressTestImg,
     },
     {
-      title: "Обследование сетевой инфраструктуры",
       description: "Комплексный анализ защитных функций сетевой инфраструктуры на соответствие требованиям технической документации и стандартам безопасности.",
       image: networkAuditImg,
     },
     {
-      title: "Обследование процессов ИБ",
       description: "Проверка соответствия процессов обеспечения информационной безопасности требованиям нормативных правовых актов и стандартов в сфере обеспечения информационной безопасности.",
       image: securityProcessesImg,
+    },
+    {
+      description: "Полный цикл подготовительных мероприятий для объектов информационных систем к процедуре сертификационных испытаний. Включает предварительную диагностику, подготовку технической документации, инструктаж сотрудников, исправление обнаруженных несоответствий и консультационное сопровождение по нормативным требованиям.",
+      image: preparationTestingImg,
     },
   ];
 
@@ -401,11 +393,10 @@ const IndexPage: React.FC = () => {
           Виды <span>испытаний</span>
         </SectionTitle>
         <ServicesGrid>
-          {services.map((service) => (
-            <ServiceCard key={service.title}>
+          {services.map((service, index) => (
+            <ServiceCard key={index}>
               <ServiceImage $image={service.image} />
               <ServiceContent>
-                <ServiceTitle>{service.title}</ServiceTitle>
                 <ServiceDescription>{service.description}</ServiceDescription>
               </ServiceContent>
             </ServiceCard>
