@@ -12,7 +12,7 @@ const PageHeader = styled.section`
 `;
 
 const PageTitle = styled.h1`
-  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 700;
   margin-bottom: ${theme.spacing.lg};
   letter-spacing: -0.02em;
@@ -30,28 +30,25 @@ const ContentContainer = styled.section`
 
 const ContentSection = styled.div`
   margin-bottom: ${theme.spacing["4xl"]};
-  padding: ${theme.spacing["3xl"]};
-  background: ${theme.colors.surface};
-  border: 1px solid ${theme.colors.border};
-  border-radius: ${theme.borderRadius.lg};
+  padding: ${theme.spacing["2xl"]} 0;
 
   @media (max-width: ${theme.breakpoints.tablet}) {
-    padding: ${theme.spacing["2xl"]} ${theme.spacing.lg};
+    padding: ${theme.spacing.xl} 0;
   }
 `;
 
 const SectionTitle = styled.h2`
-  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
   font-weight: 700;
-  margin-bottom: ${theme.spacing.lg};
+  margin-bottom: ${theme.spacing.md};
   color: ${theme.colors.text};
 `;
 
 const Paragraph = styled.p`
-  font-size: ${theme.fontSizes.lg};
+  font-size: ${theme.fontSizes.base};
   color: ${theme.colors.textSecondary};
-  line-height: 1.8;
-  margin-bottom: ${theme.spacing.md};
+  line-height: 1.7;
+  margin-bottom: ${theme.spacing.sm};
 
   &:last-child {
     margin-bottom: 0;
@@ -61,16 +58,16 @@ const Paragraph = styled.p`
 const FeaturesList = styled.ul`
   list-style: none;
   padding: 0;
-  margin: ${theme.spacing.xl} 0;
+  margin: ${theme.spacing.lg} 0;
   display: grid;
-  gap: ${theme.spacing.md};
+  gap: ${theme.spacing.sm};
 `;
 
 const FeatureItem = styled.li`
   display: flex;
   align-items: flex-start;
   gap: ${theme.spacing.sm};
-  font-size: ${theme.fontSizes.lg};
+  font-size: ${theme.fontSizes.base};
   color: ${theme.colors.textSecondary};
   line-height: 1.6;
 
@@ -78,26 +75,24 @@ const FeatureItem = styled.li`
     content: "✓";
     color: ${theme.colors.primary};
     font-weight: bold;
-    font-size: ${theme.fontSizes.xl};
+    font-size: ${theme.fontSizes.lg};
     flex-shrink: 0;
   }
 `;
 
 const HighlightBox = styled.div`
-  padding: ${theme.spacing.xl};
-  background: ${theme.colors.primaryMuted};
-  border: 1px solid ${theme.colors.primary};
-  border-radius: ${theme.borderRadius.md};
-  margin: ${theme.spacing.xl} 0;
+  padding: ${theme.spacing.lg} 0;
+  margin: ${theme.spacing.lg} 0;
 `;
 
 const HighlightText = styled.p`
-  font-size: ${theme.fontSizes.xl};
+  font-size: ${theme.fontSizes.base};
   color: ${theme.colors.text};
   font-weight: 600;
   line-height: 1.6;
   margin: 0;
   text-align: center;
+  font-style: italic;
 `;
 
 const ValuesContainer = styled.div`
@@ -182,12 +177,12 @@ const ValueHeader = styled.div`
 `;
 
 const ValueIcon = styled.div`
-  font-size: ${theme.fontSizes["3xl"]};
+  font-size: ${theme.fontSizes["2xl"]};
   flex-shrink: 0;
 `;
 
 const ValueTitle = styled.h3`
-  font-size: ${theme.fontSizes.lg};
+  font-size: ${theme.fontSizes.base};
   font-weight: 700;
   color: ${theme.colors.text};
   margin: 0;
@@ -196,7 +191,7 @@ const ValueTitle = styled.h3`
 const ValueText = styled.p`
   font-size: ${theme.fontSizes.sm};
   color: ${theme.colors.textSecondary};
-  line-height: 1.6;
+  line-height: 1.5;
   margin: 0;
 `;
 
