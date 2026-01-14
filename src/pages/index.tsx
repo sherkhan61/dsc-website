@@ -218,101 +218,66 @@ const SectionTitle = styled.h2`
 
 const ServicesGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: ${theme.spacing["2xl"]};
   margin-top: ${theme.spacing["3xl"]};
+
+  @media (max-width: ${theme.breakpoints.tablet}) {
+    grid-template-columns: 1fr;
+    gap: ${theme.spacing.xl};
+  }
 `;
 
-const ServiceCard = styled(Link)<{ $bgImage: string }>`
-  padding: ${theme.spacing["3xl"]};
-  background: ${theme.colors.surfaceGlass};
-  backdrop-filter: blur(20px) saturate(180%);
+const ServiceCard = styled.div`
+  background: ${theme.colors.surface};
   border: 1px solid ${theme.colors.border};
-  border-radius: ${theme.borderRadius["2xl"]};
-  text-decoration: none;
-  transition: all ${theme.transitions.normal};
-  position: relative;
+  border-radius: ${theme.borderRadius.xl};
   overflow: hidden;
+  transition: all ${theme.transitions.normal};
   display: flex;
   flex-direction: column;
-  gap: ${theme.spacing.xl};
-  min-height: 320px;
-
-  /* Background image */
-  &::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-image: url(${props => props.$bgImage});
-    background-size: cover;
-    background-position: center;
-    opacity: 0.3;
-    transition: opacity ${theme.transitions.normal}, transform ${theme.transitions.normal};
-  }
-
-  /* Dark overlay for text readability */
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.85) 100%);
-    opacity: 0.9;
-    transition: opacity ${theme.transitions.normal};
-  }
 
   &:hover {
+    transform: translateY(-4px);
+    box-shadow: ${theme.shadows.lg};
     border-color: ${theme.colors.borderHover};
-    transform: translateY(-8px);
-    box-shadow: ${theme.shadows.glowAccent};
-
-    &::before {
-      opacity: 0.4;
-      transform: scale(1.05);
-    }
-
-    &::after {
-      opacity: 0.8;
-    }
-  }
-
-  h3 {
-    font-size: ${theme.fontSizes.xl};
-    margin: 0;
-    color: ${theme.colors.text};
-    position: relative;
-    z-index: 1;
-  }
-
-  p {
-    color: ${theme.colors.textSecondary};
-    line-height: 1.7;
-    margin: 0;
-    position: relative;
-    z-index: 1;
-    font-size: ${theme.fontSizes.base};
   }
 `;
 
-const CardHeader = styled.div`
+const ServiceImage = styled.div<{ $image: string }>`
+  width: 100%;
+  height: 240px;
+  background-image: url(${props => props.$image});
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  @media (max-width: ${theme.breakpoints.tablet}) {
+    height: 200px;
+  }
+`;
+
+const ServiceContent = styled.div`
+  padding: ${theme.spacing.xl};
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: ${theme.spacing.md};
-  position: relative;
-  z-index: 1;
+  flex: 1;
 `;
 
-const Icon = styled.div`
-  width: 48px;
-  height: 48px;
-  border-radius: ${theme.borderRadius.md};
-  background: linear-gradient(135deg, ${theme.colors.primary}30 0%, ${theme.colors.accent}30 100%);
-  backdrop-filter: blur(10px);
-  border: 1px solid ${theme.colors.primary}40;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: ${theme.fontSizes["2xl"]};
-  flex-shrink: 0;
+const ServiceTitle = styled.h3`
+  font-size: ${theme.fontSizes.xl};
+  font-weight: 700;
+  color: ${theme.colors.text};
+  margin: 0;
+  line-height: 1.3;
+`;
+
+const ServiceDescription = styled.p`
+  font-size: ${theme.fontSizes.sm};
+  color: ${theme.colors.textSecondary};
+  line-height: 1.6;
+  margin: 0;
 `;
 
 const StatsSection = styled.div`
@@ -357,46 +322,29 @@ const StatLabel = styled.div`
 const IndexPage: React.FC = () => {
   const services = [
     {
-      icon: "🔍",
       title: "Анализ исходного кода",
       description: "Проверка с целью выявления уязвимостей ПО в соответствии с международными классификациями уязвимостей (CWE, OWASP Top 10, OWASP Mobile Top 10, OWASP API Top 10), международными базами данных уязвимостей (CVE, NIST) и стандартом Республики Казахстан 15408-3.",
-      path: "/contacts",
-      bgImage: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&h=600&fit=crop",
+      image: "/images/code-analysis.jpg",
     },
     {
-      icon: "🛡️",
-      title: "Испытания функций безопасности",
+      title: "Испытание функций безопасности",
       description: "Проверка защитных механизмов серверов и виртуальных ресурсов на соответствие технической документации и нормативным актам РК в области информационной безопасности.",
-      path: "/contacts",
-      bgImage: "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=800&h=600&fit=crop",
+      image: "/images/security-testing.jpg",
     },
     {
-      icon: "⚡",
       title: "Нагрузочное тестирование",
       description: "Оценка соблюдения требований доступности, целостности и конфиденциальности объекта испытаний с применением специализированного ПО в условиях автоматизированных сценариев.",
-      path: "/contacts",
-      bgImage: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop",
+      image: "/images/stress-test.jpg",
     },
     {
-      icon: "🌐",
-      title: "Проверка сетевой инфраструктуры",
+      title: "Обследование сетевой инфраструктуры",
       description: "Комплексный анализ защитных функций сетевой инфраструктуры на соответствие требованиям технической документации и стандартам безопасности.",
-      path: "/contacts",
-      bgImage: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&h=600&fit=crop",
+      image: "/images/network-audit.jpg",
     },
     {
-      icon: "🔐",
-      title: "Обследование процессов обеспечения информационной безопасности",
-      description: "Проверка соответствия процессов обеспечения информационной безопасности требованиям нормативных правовых актов и стандартов в сфере обеспечения информационной безопасности, сканирование серверов, виртуальных ресурсов и сетевого оборудования программными средствами на наличие известных уязвимостей и формирование рекомендаций по их устранению.",
-      path: "/contacts",
-      bgImage: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&h=600&fit=crop",
-    },
-    {
-      icon: "📋",
-      title: "Подготовка к испытаниям",
-      description: "Полный цикл подготовительных мероприятий для объектов информационных систем к процедуре сертификационных испытаний. Включает предварительную диагностику, подготовку технической документации, инструктаж сотрудников, исправление обнаруженных несоответствий и консультационное сопровождение по нормативным требованиям.",
-      path: "/contacts",
-      bgImage: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&h=600&fit=crop",
+      title: "Обследование процессов ИБ",
+      description: "Проверка соответствия процессов обеспечения информационной безопасности требованиям нормативных правовых актов и стандартов в сфере обеспечения информационной безопасности.",
+      image: "/images/security-processes.jpg",
     },
   ];
 
@@ -447,12 +395,12 @@ const IndexPage: React.FC = () => {
         </SectionTitle>
         <ServicesGrid>
           {services.map((service) => (
-            <ServiceCard key={service.title} to={service.path} $bgImage={service.bgImage}>
-              <CardHeader>
-                <Icon>{service.icon}</Icon>
-                <h3>{service.title}</h3>
-              </CardHeader>
-              <p>{service.description}</p>
+            <ServiceCard key={service.title}>
+              <ServiceImage $image={service.image} />
+              <ServiceContent>
+                <ServiceTitle>{service.title}</ServiceTitle>
+                <ServiceDescription>{service.description}</ServiceDescription>
+              </ServiceContent>
             </ServiceCard>
           ))}
         </ServicesGrid>
