@@ -94,14 +94,18 @@ const StepsGrid = styled.div`
 `;
 
 const StepCard = styled.div`
-  padding: ${theme.spacing["2xl"]};
+  padding: ${theme.spacing.lg} ${theme.spacing.xl};
   background: ${theme.colors.surface};
   border: 1px solid ${theme.colors.border};
   border-radius: ${theme.borderRadius.lg};
   position: relative;
   transition: all ${theme.transitions.normal};
-  min-width: 300px;
+  min-width: 260px;
+  max-width: 320px;
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: ${theme.spacing.md};
 
   &:hover {
     border-color: ${theme.colors.primary};
@@ -110,34 +114,41 @@ const StepCard = styled.div`
 
   @media (max-width: ${theme.breakpoints.tablet}) {
     min-width: unset;
+    max-width: unset;
     width: 100%;
   }
 `;
 
+const StepHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${theme.spacing.md};
+`;
+
 const StepNumber = styled.div`
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   background: ${theme.colors.primaryMuted};
   border: 2px solid ${theme.colors.primary};
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: ${theme.fontSizes["2xl"]};
+  font-size: ${theme.fontSizes.xl};
   font-weight: 700;
   color: ${theme.colors.primary};
-  margin-bottom: ${theme.spacing.lg};
+  flex-shrink: 0;
 `;
 
 const StepTitle = styled.h3`
-  font-size: ${theme.fontSizes.xl};
+  font-size: ${theme.fontSizes.lg};
   font-weight: 700;
   color: ${theme.colors.text};
-  margin-bottom: ${theme.spacing.sm};
+  margin: 0;
 `;
 
 const StepDescription = styled.p`
-  font-size: ${theme.fontSizes.base};
+  font-size: ${theme.fontSizes.sm};
   color: ${theme.colors.textSecondary};
   line-height: 1.7;
   margin: 0;
@@ -363,16 +374,20 @@ const ClientsPage: React.FC = () => {
               {/* Original cards */}
               {steps.map((step) => (
                 <StepCard key={`original-${step.number}`}>
-                  <StepNumber>{step.number}</StepNumber>
-                  <StepTitle>{step.title}</StepTitle>
+                  <StepHeader>
+                    <StepNumber>{step.number}</StepNumber>
+                    <StepTitle>{step.title}</StepTitle>
+                  </StepHeader>
                   <StepDescription>{step.description}</StepDescription>
                 </StepCard>
               ))}
               {/* Duplicate cards for seamless loop */}
               {steps.map((step) => (
                 <StepCard key={`duplicate-${step.number}`}>
-                  <StepNumber>{step.number}</StepNumber>
-                  <StepTitle>{step.title}</StepTitle>
+                  <StepHeader>
+                    <StepNumber>{step.number}</StepNumber>
+                    <StepTitle>{step.title}</StepTitle>
+                  </StepHeader>
                   <StepDescription>{step.description}</StepDescription>
                 </StepCard>
               ))}
@@ -383,8 +398,10 @@ const ClientsPage: React.FC = () => {
           <StepsGrid>
             {steps.map((step) => (
               <StepCard key={step.number}>
-                <StepNumber>{step.number}</StepNumber>
-                <StepTitle>{step.title}</StepTitle>
+                <StepHeader>
+                  <StepNumber>{step.number}</StepNumber>
+                  <StepTitle>{step.title}</StepTitle>
+                </StepHeader>
                 <StepDescription>{step.description}</StepDescription>
               </StepCard>
             ))}

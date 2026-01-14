@@ -223,7 +223,7 @@ const ServicesGrid = styled.div`
   margin-top: ${theme.spacing["3xl"]};
 `;
 
-const ServiceCard = styled(Link)<{ $bgIndex: number }>`
+const ServiceCard = styled(Link)<{ $bgImage: string }>`
   padding: ${theme.spacing["3xl"]};
   background: ${theme.colors.surfaceGlass};
   backdrop-filter: blur(20px) saturate(180%);
@@ -238,24 +238,16 @@ const ServiceCard = styled(Link)<{ $bgIndex: number }>`
   gap: ${theme.spacing.xl};
   min-height: 320px;
 
-  /* Background gradient patterns - unique for each card */
+  /* Background image */
   &::before {
     content: "";
     position: absolute;
     inset: 0;
-    opacity: 0.15;
-    transition: opacity ${theme.transitions.normal};
-    background: ${props => {
-      const gradients = [
-        'radial-gradient(circle at 20% 50%, #0066ff 0%, transparent 50%), radial-gradient(circle at 80% 80%, #00ff88 0%, transparent 50%)',
-        'linear-gradient(135deg, #a855f7 0%, #06b6d4 100%), radial-gradient(circle at 50% 120%, #00ff88 0%, transparent 70%)',
-        'radial-gradient(ellipse at 0% 0%, #ffaa00 0%, transparent 50%), radial-gradient(ellipse at 100% 100%, #0066ff 0%, transparent 50%)',
-        'conic-gradient(from 45deg at 30% 30%, #06b6d4 0%, #a855f7 50%, #0066ff 100%)',
-        'linear-gradient(225deg, #00ff88 0%, transparent 50%), radial-gradient(circle at 70% 30%, #a855f7 0%, transparent 60%)',
-        'radial-gradient(circle at 50% 0%, #0066ff 0%, transparent 50%), linear-gradient(180deg, #00ff88 0%, transparent 100%)'
-      ];
-      return gradients[props.$bgIndex % gradients.length];
-    }};
+    background-image: url(${props => props.$bgImage});
+    background-size: cover;
+    background-position: center;
+    opacity: 0.3;
+    transition: opacity ${theme.transitions.normal}, transform ${theme.transitions.normal};
   }
 
   /* Dark overlay for text readability */
@@ -263,8 +255,8 @@ const ServiceCard = styled(Link)<{ $bgIndex: number }>`
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.8) 100%);
-    opacity: 0.7;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.85) 100%);
+    opacity: 0.9;
     transition: opacity ${theme.transitions.normal};
   }
 
@@ -274,11 +266,12 @@ const ServiceCard = styled(Link)<{ $bgIndex: number }>`
     box-shadow: ${theme.shadows.glowAccent};
 
     &::before {
-      opacity: 0.25;
+      opacity: 0.4;
+      transform: scale(1.05);
     }
 
     &::after {
-      opacity: 0.6;
+      opacity: 0.8;
     }
   }
 
@@ -368,36 +361,42 @@ const IndexPage: React.FC = () => {
       title: "Анализ исходного кода",
       description: "Проверка с целью выявления уязвимостей ПО в соответствии с международными классификациями уязвимостей (CWE, OWASP Top 10, OWASP Mobile Top 10, OWASP API Top 10), международными базами данных уязвимостей (CVE, NIST) и стандартом Республики Казахстан 15408-3.",
       path: "/contacts",
+      bgImage: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&h=600&fit=crop",
     },
     {
       icon: "🛡️",
       title: "Испытания функций безопасности",
       description: "Проверка защитных механизмов серверов и виртуальных ресурсов на соответствие технической документации и нормативным актам РК в области информационной безопасности.",
       path: "/contacts",
+      bgImage: "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=800&h=600&fit=crop",
     },
     {
       icon: "⚡",
       title: "Нагрузочное тестирование",
       description: "Оценка соблюдения требований доступности, целостности и конфиденциальности объекта испытаний с применением специализированного ПО в условиях автоматизированных сценариев.",
       path: "/contacts",
+      bgImage: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop",
     },
     {
       icon: "🌐",
       title: "Проверка сетевой инфраструктуры",
       description: "Комплексный анализ защитных функций сетевой инфраструктуры на соответствие требованиям технической документации и стандартам безопасности.",
       path: "/contacts",
+      bgImage: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&h=600&fit=crop",
     },
     {
       icon: "🔐",
       title: "Обследование процессов обеспечения информационной безопасности",
       description: "Проверка соответствия процессов обеспечения информационной безопасности требованиям нормативных правовых актов и стандартов в сфере обеспечения информационной безопасности, сканирование серверов, виртуальных ресурсов и сетевого оборудования программными средствами на наличие известных уязвимостей и формирование рекомендаций по их устранению.",
       path: "/contacts",
+      bgImage: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&h=600&fit=crop",
     },
     {
       icon: "📋",
       title: "Подготовка к испытаниям",
       description: "Полный цикл подготовительных мероприятий для объектов информационных систем к процедуре сертификационных испытаний. Включает предварительную диагностику, подготовку технической документации, инструктаж сотрудников, исправление обнаруженных несоответствий и консультационное сопровождение по нормативным требованиям.",
       path: "/contacts",
+      bgImage: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&h=600&fit=crop",
     },
   ];
 
@@ -447,8 +446,8 @@ const IndexPage: React.FC = () => {
           Виды <span>испытаний</span>
         </SectionTitle>
         <ServicesGrid>
-          {services.map((service, index) => (
-            <ServiceCard key={service.title} to={service.path} $bgIndex={index}>
+          {services.map((service) => (
+            <ServiceCard key={service.title} to={service.path} $bgImage={service.bgImage}>
               <CardHeader>
                 <Icon>{service.icon}</Icon>
                 <h3>{service.title}</h3>

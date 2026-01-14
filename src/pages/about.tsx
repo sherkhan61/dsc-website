@@ -149,15 +149,18 @@ const ValuesGrid = styled.div`
 `;
 
 const ValueCard = styled.div`
-  padding: ${theme.spacing.xl};
+  padding: ${theme.spacing.lg} ${theme.spacing.xl};
   background: ${theme.colors.surfaceGlass};
   backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid ${theme.colors.border};
   border-radius: ${theme.borderRadius.md};
-  text-align: center;
   transition: all ${theme.transitions.normal};
-  min-width: 280px;
+  min-width: 220px;
+  max-width: 280px;
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: ${theme.spacing.md};
 
   &:hover {
     border-color: ${theme.colors.primary};
@@ -167,24 +170,31 @@ const ValueCard = styled.div`
 
   @media (max-width: ${theme.breakpoints.tablet}) {
     min-width: unset;
+    max-width: unset;
     width: 100%;
   }
 `;
 
+const ValueHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${theme.spacing.md};
+`;
+
 const ValueIcon = styled.div`
-  font-size: ${theme.fontSizes["4xl"]};
-  margin-bottom: ${theme.spacing.md};
+  font-size: ${theme.fontSizes["3xl"]};
+  flex-shrink: 0;
 `;
 
 const ValueTitle = styled.h3`
-  font-size: ${theme.fontSizes.xl};
+  font-size: ${theme.fontSizes.lg};
   font-weight: 700;
   color: ${theme.colors.text};
-  margin-bottom: ${theme.spacing.sm};
+  margin: 0;
 `;
 
 const ValueText = styled.p`
-  font-size: ${theme.fontSizes.base};
+  font-size: ${theme.fontSizes.sm};
   color: ${theme.colors.textSecondary};
   line-height: 1.6;
   margin: 0;
@@ -317,16 +327,20 @@ const AboutPage: React.FC = () => {
               {/* Original cards */}
               {values.map((value, index) => (
                 <ValueCard key={`original-${index}`}>
-                  <ValueIcon>{value.icon}</ValueIcon>
-                  <ValueTitle>{value.title}</ValueTitle>
+                  <ValueHeader>
+                    <ValueIcon>{value.icon}</ValueIcon>
+                    <ValueTitle>{value.title}</ValueTitle>
+                  </ValueHeader>
                   <ValueText>{value.text}</ValueText>
                 </ValueCard>
               ))}
               {/* Duplicate cards for seamless loop */}
               {values.map((value, index) => (
                 <ValueCard key={`duplicate-${index}`}>
-                  <ValueIcon>{value.icon}</ValueIcon>
-                  <ValueTitle>{value.title}</ValueTitle>
+                  <ValueHeader>
+                    <ValueIcon>{value.icon}</ValueIcon>
+                    <ValueTitle>{value.title}</ValueTitle>
+                  </ValueHeader>
                   <ValueText>{value.text}</ValueText>
                 </ValueCard>
               ))}
@@ -337,8 +351,10 @@ const AboutPage: React.FC = () => {
           <ValuesGrid>
             {values.map((value, index) => (
               <ValueCard key={index}>
-                <ValueIcon>{value.icon}</ValueIcon>
-                <ValueTitle>{value.title}</ValueTitle>
+                <ValueHeader>
+                  <ValueIcon>{value.icon}</ValueIcon>
+                  <ValueTitle>{value.title}</ValueTitle>
+                </ValueHeader>
                 <ValueText>{value.text}</ValueText>
               </ValueCard>
             ))}
