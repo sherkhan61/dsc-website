@@ -3,6 +3,7 @@ import { Link } from "gatsby";
 import styled from "styled-components";
 import Layout from "../components/Layout";
 import SEO from "../components/SEO";
+import ImageWithSkeleton from "../components/ImageWithSkeleton";
 import { theme } from "../styles/GlobalStyles";
 
 // Service type images
@@ -311,13 +312,11 @@ const ServiceCard = styled.div`
   }
 `;
 
-const ServiceImage = styled.div<{ $image: string }>`
+const ServiceImageContainer = styled.div`
   width: 100%;
   height: 240px;
-  background-image: url(${props => props.$image});
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  position: relative;
+  overflow: hidden;
 
   @media (max-width: ${theme.breakpoints.tablet}) {
     height: 200px;
@@ -454,7 +453,12 @@ const IndexPage: React.FC = () => {
         <ServicesGrid>
           {services.map((service, index) => (
             <ServiceCard key={index}>
-              <ServiceImage $image={service.image} />
+              <ServiceImageContainer>
+                <ImageWithSkeleton
+                  src={service.image}
+                  alt={`Услуга ${index + 1}`}
+                />
+              </ServiceImageContainer>
               <ServiceContent>
                 <ServiceDescription>{service.description}</ServiceDescription>
               </ServiceContent>

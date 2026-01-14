@@ -51,7 +51,7 @@ const StepsContainer = styled.div`
   position: relative;
 
   @media (max-width: ${theme.breakpoints.tablet}) {
-    overflow: visible;
+    display: none;
   }
 `;
 
