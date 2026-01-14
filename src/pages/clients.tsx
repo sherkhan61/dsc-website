@@ -260,7 +260,7 @@ const CTADescription = styled.p`
   line-height: 1.7;
 `;
 
-const CTAButton = styled(Link)`
+const CTAButton = styled(Link as any)`
   display: inline-flex;
   align-items: center;
   gap: ${theme.spacing.sm};

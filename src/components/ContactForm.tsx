@@ -10,7 +10,6 @@ import {
   validateMessage,
   generateCSRFToken,
   RateLimiter,
-  type FormData as SecurityFormData,
 } from "../utils/security";
 import { ContactFormData, FormState } from "../types";
 import { postWithRetry, contactApiCircuitBreaker, withTimeout } from "../utils/api";
@@ -286,7 +285,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
               maxRetries: 3,
               baseDelay: 1000,
               maxDelay: 5000,
-              shouldRetry: (error, attempt) => {
+              shouldRetry: (error, _attempt) => {
                 // Only retry on network errors or 5xx errors
                 if (!error.response) return true;
                 const status = error.response?.status;

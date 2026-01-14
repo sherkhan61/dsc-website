@@ -114,13 +114,6 @@ const InfoValue = styled.a`
   }
 `;
 
-const InfoText = styled.p`
-  font-size: ${theme.fontSizes.base};
-  color: ${theme.colors.textSecondary};
-  line-height: 1.7;
-  margin: 0;
-`;
-
 const AddressText = styled.p`
   font-size: ${theme.fontSizes.base};
   color: ${theme.colors.text};

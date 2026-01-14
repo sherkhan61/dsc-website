@@ -43,7 +43,7 @@ const Description = styled.p`
   line-height: 1.6;
 `;
 
-const HomeButton = styled(Link)`
+const HomeButton = styled(Link as any)`
   display: inline-flex;
   align-items: center;
   gap: ${theme.spacing.sm};

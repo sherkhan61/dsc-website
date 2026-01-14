@@ -65,7 +65,7 @@ const FooterListItem = styled.li`
   margin-bottom: ${theme.spacing.sm};
 `;
 
-const FooterLink = styled(Link)`
+const FooterLink = styled(Link as any)`
   font-size: ${theme.fontSizes.sm};
   color: ${theme.colors.textSecondary};
   text-decoration: none;
@@ -158,7 +158,7 @@ const FooterBottomLinks = styled.div`
   flex-wrap: wrap;
 `;
 
-const FooterBottomLink = styled(Link)`
+const FooterBottomLink = styled(Link as any)`
   font-size: ${theme.fontSizes.sm};
   color: ${theme.colors.textTertiary};
   text-decoration: none;

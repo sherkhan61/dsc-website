@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "gatsby";
 import styled from "styled-components";
 import Layout from "../components/Layout";
@@ -12,6 +12,65 @@ import stressTestImg from "../images/stress-test.jpg";
 import networkAuditImg from "../images/network-audit.jpg";
 import securityProcessesImg from "../images/security-processes.jpg";
 import preparationTestingImg from "../images/preparation-testing.jpg";
+
+// Animated counter component
+const AnimatedCounter: React.FC<{ value: string }> = ({ value }) => {
+  const [displayValue, setDisplayValue] = useState("0");
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const elementRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (hasAnimated) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setHasAnimated(true);
+          animateValue();
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    if (elementRef.current) {
+      observer.observe(elementRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [hasAnimated]);
+
+  const animateValue = () => {
+    // Parse the value
+    const numMatch = value.match(/\d+/);
+    if (!numMatch) {
+      setDisplayValue(value);
+      return;
+    }
+
+    const targetNum = parseInt(numMatch[0], 10);
+    const suffix = value.replace(numMatch[0], "");
+    const duration = 2000; // 2 seconds
+    const steps = 60;
+    const increment = targetNum / steps;
+    let current = 0;
+    let step = 0;
+
+    const timer = setInterval(() => {
+      step++;
+      current = Math.min(current + increment, targetNum);
+
+      if (step >= steps || current >= targetNum) {
+        setDisplayValue(targetNum + suffix);
+        clearInterval(timer);
+      } else {
+        setDisplayValue(Math.floor(current) + suffix);
+      }
+    }, duration / steps);
+  };
+
+  return <div ref={elementRef}>{displayValue}</div>;
+};
 
 const Hero = styled.section`
   position: relative;
@@ -118,7 +177,7 @@ const HeroCTA = styled.div`
   animation: fadeInUp 1s ease-out 0.6s both;
 `;
 
-const PrimaryButton = styled(Link)`
+const PrimaryButton = styled(Link as any)`
   padding: ${theme.spacing.md} ${theme.spacing["3xl"]};
   background: linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.accent} 100%);
   color: ${theme.colors.background};
@@ -174,7 +233,7 @@ const PrimaryButton = styled(Link)`
   }
 `;
 
-const SecondaryButton = styled(Link)`
+const SecondaryButton = styled(Link as any)`
   padding: ${theme.spacing.md} ${theme.spacing["2xl"]};
   background: ${theme.colors.surfaceGlass};
   backdrop-filter: blur(20px) saturate(180%);
@@ -411,7 +470,9 @@ const IndexPage: React.FC = () => {
         <StatsSection>
           {stats.map((stat) => (
             <StatCard key={stat.label}>
-              <StatValue>{stat.value}</StatValue>
+              <StatValue>
+                <AnimatedCounter value={stat.value} />
+              </StatValue>
               <StatLabel>{stat.label}</StatLabel>
             </StatCard>
           ))}

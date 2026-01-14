@@ -15,7 +15,7 @@ const DEFAULT_RETRY_CONFIG: RetryConfig = {
   maxRetries: 3,
   baseDelay: 1000, // 1 second
   maxDelay: 10000, // 10 seconds
-  shouldRetry: (error: any, attempt: number) => {
+  shouldRetry: (error: any, _attempt: number) => {
     // Retry on network errors or 5xx status codes
     if (!error.response) return true; // Network error
     const status = error.response?.status;
@@ -48,7 +48,7 @@ const calculateDelay = (attempt: number, config: RetryConfig): number => {
 /**
  * Fetch with retry logic
  */
-export async function fetchWithRetry<T = any>(
+export async function fetchWithRetry(
   url: string,
   options: RequestInit = {},
   retryConfig: Partial<RetryConfig> = {}
@@ -155,7 +155,7 @@ export async function fetchWithRetry<T = any>(
 /**
  * Wrapper for POST requests with retry
  */
-export async function postWithRetry<T = any>(
+export async function postWithRetry(
   url: string,
   data: any,
   options: RequestInit = {},
@@ -179,7 +179,7 @@ export async function postWithRetry<T = any>(
 /**
  * Wrapper for GET requests with retry
  */
-export async function getWithRetry<T = any>(
+export async function getWithRetry(
   url: string,
   options: RequestInit = {},
   retryConfig?: Partial<RetryConfig>

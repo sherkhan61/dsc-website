@@ -12,7 +12,7 @@ const createDOMPurify = () => {
   }
   // Для SSR возвращаем mock с базовой санитизацией
   return {
-    sanitize: (input: string) => {
+    sanitize: (input: string, _config?: any) => {
       return String(input)
         .replace(/[<>]/g, "")
         .replace(/javascript:/gi, "")
@@ -47,8 +47,8 @@ export const sanitizeInput = (input: string): string => {
   }
   
   // Remove any HTML tags and scripts
-  const cleaned = purify.sanitize(input, PURIFY_CONFIG);
-  
+  const cleaned = String(purify.sanitize(input, PURIFY_CONFIG));
+
   // Additional cleanup: remove any remaining special characters that could be dangerous
   return cleaned
     .replace(/[<>]/g, "") // Remove any angle brackets
