@@ -100,11 +100,52 @@ const HighlightText = styled.p`
   text-align: center;
 `;
 
+const ValuesContainer = styled.div`
+  margin-top: ${theme.spacing.xl};
+  overflow: hidden;
+  position: relative;
+
+  @media (max-width: ${theme.breakpoints.tablet}) {
+    overflow: visible;
+  }
+`;
+
+const ValuesTrack = styled.div`
+  display: flex;
+  gap: ${theme.spacing.xl};
+  animation: scroll 30s linear infinite;
+  width: fit-content;
+
+  /* Pause animation on hover */
+  &:hover {
+    animation-play-state: paused;
+  }
+
+  @keyframes scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(calc(-100% - ${theme.spacing.xl}));
+    }
+  }
+
+  @media (max-width: ${theme.breakpoints.tablet}) {
+    animation: none;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+`;
+
 const ValuesGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: ${theme.spacing.xl};
   margin-top: ${theme.spacing.xl};
+
+  @media (min-width: calc(${theme.breakpoints.tablet} + 1px)) {
+    display: none;
+  }
 `;
 
 const ValueCard = styled.div`
@@ -115,11 +156,18 @@ const ValueCard = styled.div`
   border-radius: ${theme.borderRadius.md};
   text-align: center;
   transition: all ${theme.transitions.normal};
+  min-width: 280px;
+  flex-shrink: 0;
 
   &:hover {
     border-color: ${theme.colors.primary};
     transform: translateY(-4px);
     box-shadow: ${theme.shadows.glow};
+  }
+
+  @media (max-width: ${theme.breakpoints.tablet}) {
+    min-width: unset;
+    width: 100%;
   }
 `;
 
@@ -263,6 +311,29 @@ const AboutPage: React.FC = () => {
 
         <ContentSection>
           <SectionTitle>Наши ценности</SectionTitle>
+          {/* Desktop: Animated scrolling */}
+          <ValuesContainer>
+            <ValuesTrack>
+              {/* Original cards */}
+              {values.map((value, index) => (
+                <ValueCard key={`original-${index}`}>
+                  <ValueIcon>{value.icon}</ValueIcon>
+                  <ValueTitle>{value.title}</ValueTitle>
+                  <ValueText>{value.text}</ValueText>
+                </ValueCard>
+              ))}
+              {/* Duplicate cards for seamless loop */}
+              {values.map((value, index) => (
+                <ValueCard key={`duplicate-${index}`}>
+                  <ValueIcon>{value.icon}</ValueIcon>
+                  <ValueTitle>{value.title}</ValueTitle>
+                  <ValueText>{value.text}</ValueText>
+                </ValueCard>
+              ))}
+            </ValuesTrack>
+          </ValuesContainer>
+
+          {/* Mobile: Static grid */}
           <ValuesGrid>
             {values.map((value, index) => (
               <ValueCard key={index}>

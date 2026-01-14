@@ -45,11 +45,52 @@ const SectionTitle = styled.h2`
   color: ${theme.colors.text};
 `;
 
+const StepsContainer = styled.div`
+  margin-top: ${theme.spacing["3xl"]};
+  overflow: hidden;
+  position: relative;
+
+  @media (max-width: ${theme.breakpoints.tablet}) {
+    overflow: visible;
+  }
+`;
+
+const StepsTrack = styled.div`
+  display: flex;
+  gap: ${theme.spacing.xl};
+  animation: scroll 35s linear infinite;
+  width: fit-content;
+
+  /* Pause animation on hover */
+  &:hover {
+    animation-play-state: paused;
+  }
+
+  @keyframes scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(calc(-100% - ${theme.spacing.xl}));
+    }
+  }
+
+  @media (max-width: ${theme.breakpoints.tablet}) {
+    animation: none;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+`;
+
 const StepsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: ${theme.spacing.xl};
   margin-top: ${theme.spacing["3xl"]};
+
+  @media (min-width: calc(${theme.breakpoints.tablet} + 1px)) {
+    display: none;
+  }
 `;
 
 const StepCard = styled.div`
@@ -59,10 +100,17 @@ const StepCard = styled.div`
   border-radius: ${theme.borderRadius.lg};
   position: relative;
   transition: all ${theme.transitions.normal};
+  min-width: 300px;
+  flex-shrink: 0;
 
   &:hover {
     border-color: ${theme.colors.primary};
     transform: translateY(-4px);
+  }
+
+  @media (max-width: ${theme.breakpoints.tablet}) {
+    min-width: unset;
+    width: 100%;
   }
 `;
 
@@ -309,6 +357,29 @@ const ClientsPage: React.FC = () => {
       <ContentContainer>
         <ProcessSection>
           <SectionTitle>Этапы сотрудничества</SectionTitle>
+          {/* Desktop: Animated scrolling */}
+          <StepsContainer>
+            <StepsTrack>
+              {/* Original cards */}
+              {steps.map((step) => (
+                <StepCard key={`original-${step.number}`}>
+                  <StepNumber>{step.number}</StepNumber>
+                  <StepTitle>{step.title}</StepTitle>
+                  <StepDescription>{step.description}</StepDescription>
+                </StepCard>
+              ))}
+              {/* Duplicate cards for seamless loop */}
+              {steps.map((step) => (
+                <StepCard key={`duplicate-${step.number}`}>
+                  <StepNumber>{step.number}</StepNumber>
+                  <StepTitle>{step.title}</StepTitle>
+                  <StepDescription>{step.description}</StepDescription>
+                </StepCard>
+              ))}
+            </StepsTrack>
+          </StepsContainer>
+
+          {/* Mobile: Static grid */}
           <StepsGrid>
             {steps.map((step) => (
               <StepCard key={step.number}>

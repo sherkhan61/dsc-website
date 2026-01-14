@@ -223,7 +223,7 @@ const ServicesGrid = styled.div`
   margin-top: ${theme.spacing["3xl"]};
 `;
 
-const ServiceCard = styled(Link)`
+const ServiceCard = styled(Link)<{ $bgIndex: number }>`
   padding: ${theme.spacing["3xl"]};
   background: ${theme.colors.surfaceGlass};
   backdrop-filter: blur(20px) saturate(180%);
@@ -235,27 +235,36 @@ const ServiceCard = styled(Link)`
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: ${theme.spacing.lg};
+  gap: ${theme.spacing.xl};
+  min-height: 320px;
 
+  /* Background gradient patterns - unique for each card */
   &::before {
     content: "";
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, ${theme.colors.primary}, ${theme.colors.accent}, ${theme.colors.accentPurple});
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform ${theme.transitions.normal};
+    inset: 0;
+    opacity: 0.15;
+    transition: opacity ${theme.transitions.normal};
+    background: ${props => {
+      const gradients = [
+        'radial-gradient(circle at 20% 50%, #0066ff 0%, transparent 50%), radial-gradient(circle at 80% 80%, #00ff88 0%, transparent 50%)',
+        'linear-gradient(135deg, #a855f7 0%, #06b6d4 100%), radial-gradient(circle at 50% 120%, #00ff88 0%, transparent 70%)',
+        'radial-gradient(ellipse at 0% 0%, #ffaa00 0%, transparent 50%), radial-gradient(ellipse at 100% 100%, #0066ff 0%, transparent 50%)',
+        'conic-gradient(from 45deg at 30% 30%, #06b6d4 0%, #a855f7 50%, #0066ff 100%)',
+        'linear-gradient(225deg, #00ff88 0%, transparent 50%), radial-gradient(circle at 70% 30%, #a855f7 0%, transparent 60%)',
+        'radial-gradient(circle at 50% 0%, #0066ff 0%, transparent 50%), linear-gradient(180deg, #00ff88 0%, transparent 100%)'
+      ];
+      return gradients[props.$bgIndex % gradients.length];
+    }};
   }
 
+  /* Dark overlay for text readability */
   &::after {
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, ${theme.colors.accent}15 0%, ${theme.colors.accentPurple}10 100%);
-    opacity: 0;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.8) 100%);
+    opacity: 0.7;
     transition: opacity ${theme.transitions.normal};
   }
 
@@ -265,17 +274,17 @@ const ServiceCard = styled(Link)`
     box-shadow: ${theme.shadows.glowAccent};
 
     &::before {
-      transform: scaleX(1);
+      opacity: 0.25;
     }
 
     &::after {
-      opacity: 1;
+      opacity: 0.6;
     }
   }
 
   h3 {
-    font-size: ${theme.fontSizes["2xl"]};
-    margin-bottom: ${theme.spacing.md};
+    font-size: ${theme.fontSizes.xl};
+    margin: 0;
     color: ${theme.colors.text};
     position: relative;
     z-index: 1;
@@ -284,23 +293,33 @@ const ServiceCard = styled(Link)`
   p {
     color: ${theme.colors.textSecondary};
     line-height: 1.7;
-    margin-bottom: 0;
+    margin: 0;
     position: relative;
     z-index: 1;
+    font-size: ${theme.fontSizes.base};
   }
 `;
 
+const CardHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${theme.spacing.md};
+  position: relative;
+  z-index: 1;
+`;
+
 const Icon = styled.div`
-  width: 56px;
-  height: 56px;
-  border-radius: ${theme.borderRadius.lg};
-  background: linear-gradient(135deg, ${theme.colors.primary}20 0%, ${theme.colors.accent}20 100%);
+  width: 48px;
+  height: 48px;
+  border-radius: ${theme.borderRadius.md};
+  background: linear-gradient(135deg, ${theme.colors.primary}30 0%, ${theme.colors.accent}30 100%);
+  backdrop-filter: blur(10px);
+  border: 1px solid ${theme.colors.primary}40;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: ${theme.fontSizes["3xl"]};
-  position: relative;
-  z-index: 1;
+  font-size: ${theme.fontSizes["2xl"]};
+  flex-shrink: 0;
 `;
 
 const StatsSection = styled.div`
@@ -407,7 +426,7 @@ const IndexPage: React.FC = () => {
         <HeroContent>
           <Badge>Аккредитованная лаборатория НАО «НЦЭ РК»</Badge>
           <HeroTitle>
-            Испытания <span>информационной безопасности</span>
+            Испытания <span>информационной безопасности объектов информатизации</span>
           </HeroTitle>
           <HeroDescription>
             Аккредитованная лаборатория с многолетним опытом в области анализа кода,
@@ -428,10 +447,12 @@ const IndexPage: React.FC = () => {
           Виды <span>испытаний</span>
         </SectionTitle>
         <ServicesGrid>
-          {services.map((service) => (
-            <ServiceCard key={service.title} to={service.path}>
-              <Icon>{service.icon}</Icon>
-              <h3>{service.title}</h3>
+          {services.map((service, index) => (
+            <ServiceCard key={service.title} to={service.path} $bgIndex={index}>
+              <CardHeader>
+                <Icon>{service.icon}</Icon>
+                <h3>{service.title}</h3>
+              </CardHeader>
               <p>{service.description}</p>
             </ServiceCard>
           ))}
