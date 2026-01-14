@@ -49,9 +49,10 @@ const config: GatsbyConfig = {
   plugins: [
     "gatsby-plugin-react-helmet",
     "gatsby-plugin-styled-components",
-    "gatsby-plugin-image",
-    "gatsby-plugin-sharp",
-    "gatsby-transformer-sharp",
+    // Temporarily disabled due to sharp module issues
+    // "gatsby-plugin-image",
+    // "gatsby-plugin-sharp",
+    // "gatsby-transformer-sharp",
     
     // Sitemap generation for SEO
     {
@@ -89,19 +90,20 @@ const config: GatsbyConfig = {
     },
 
     // Manifest for PWA capabilities
-    {
-      resolve: "gatsby-plugin-manifest",
-      options: {
-        name: "ТОО «Центр цифровой безопасности»",
-        short_name: "Digital Security Center",
-        description: "Аккредитованная лаборатория испытаний информационной безопасности",
-        start_url: "/",
-        background_color: "#0a0a0a",
-        theme_color: "#00ff88",
-        display: "standalone",
-        icon: "src/images/icon.svg",
-      },
-    },
+    // Temporarily disabled due to sharp module issues
+    // {
+    //   resolve: "gatsby-plugin-manifest",
+    //   options: {
+    //     name: "ТОО «Центр цифровой безопасности»",
+    //     short_name: "Digital Security Center",
+    //     description: "Аккредитованная лаборатория испытаний информационной безопасности",
+    //     start_url: "/",
+    //     background_color: "#0a0a0a",
+    //     theme_color: "#00ff88",
+    //     display: "standalone",
+    //     icon: "src/images/icon.svg",
+    //   },
+    // },
 
     // Source filesystem for images
     {
