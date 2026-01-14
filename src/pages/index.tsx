@@ -5,6 +5,13 @@ import Layout from "../components/Layout";
 import SEO from "../components/SEO";
 import { theme } from "../styles/GlobalStyles";
 
+// Service type images
+import codeAnalysisImg from "../images/code-analysis.jpg";
+import securityTestingImg from "../images/security-testing.jpg";
+import stressTestImg from "../images/stress-test.jpg";
+import networkAuditImg from "../images/network-audit.jpg";
+import securityProcessesImg from "../images/security-processes.jpg";
+
 const Hero = styled.section`
   position: relative;
   min-height: 100vh;
@@ -324,27 +331,27 @@ const IndexPage: React.FC = () => {
     {
       title: "Анализ исходного кода",
       description: "Проверка с целью выявления уязвимостей ПО в соответствии с международными классификациями уязвимостей (CWE, OWASP Top 10, OWASP Mobile Top 10, OWASP API Top 10), международными базами данных уязвимостей (CVE, NIST) и стандартом Республики Казахстан 15408-3.",
-      image: "/images/code-analysis.jpg",
+      image: codeAnalysisImg,
     },
     {
       title: "Испытание функций безопасности",
       description: "Проверка защитных механизмов серверов и виртуальных ресурсов на соответствие технической документации и нормативным актам РК в области информационной безопасности.",
-      image: "/images/security-testing.jpg",
+      image: securityTestingImg,
     },
     {
       title: "Нагрузочное тестирование",
       description: "Оценка соблюдения требований доступности, целостности и конфиденциальности объекта испытаний с применением специализированного ПО в условиях автоматизированных сценариев.",
-      image: "/images/stress-test.jpg",
+      image: stressTestImg,
     },
     {
       title: "Обследование сетевой инфраструктуры",
       description: "Комплексный анализ защитных функций сетевой инфраструктуры на соответствие требованиям технической документации и стандартам безопасности.",
-      image: "/images/network-audit.jpg",
+      image: networkAuditImg,
     },
     {
       title: "Обследование процессов ИБ",
       description: "Проверка соответствия процессов обеспечения информационной безопасности требованиям нормативных правовых актов и стандартов в сфере обеспечения информационной безопасности.",
-      image: "/images/security-processes.jpg",
+      image: securityProcessesImg,
     },
   ];
 
