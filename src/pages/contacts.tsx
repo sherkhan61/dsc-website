@@ -220,11 +220,7 @@ const ContactsPage: React.FC = () => {
 
           <FormContainer>
             <h2>Оставьте заявку</h2>
-            <ContactForm
-              onSuccess={() => {
-                console.log("Form submitted successfully");
-              }}
-            />
+            <ContactForm />
           </FormContainer>
         </ContactsGrid>
       </ContactsContainer>
