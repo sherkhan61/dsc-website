@@ -152,23 +152,6 @@ const Copyright = styled.p`
   margin: 0;
 `;
 
-const FooterBottomLinks = styled.div`
-  display: flex;
-  gap: ${theme.spacing.lg};
-  flex-wrap: wrap;
-`;
-
-const FooterBottomLink = styled(Link as any)`
-  font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.textTertiary};
-  text-decoration: none;
-  transition: color ${theme.transitions.fast};
-
-  &:hover {
-    color: ${theme.colors.primary};
-  }
-`;
-
 const Badge = styled.div`
   display: inline-flex;
   align-items: center;
