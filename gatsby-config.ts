@@ -5,7 +5,7 @@ const config: GatsbyConfig = {
     title: "ТОО «Центр цифровой безопасности» — Аккредитованная лаборатория испытаний информационной безопасности",
     description: "Профессиональные услуги анализа исходного кода, испытания и аудита информационной безопасности в г. Астана. Аккредитованная лаборатория с опытом работы с государственными и корпоративными заказчиками.",
     author: "ТОО «Центр цифровой безопасности»",
-    siteUrl: "https://digital-security-center.kz",
+    siteUrl: "https://digisec.kz",
     keywords: [
       "анализ исходного кода",
       "испытание информационной безопасности",
@@ -20,14 +20,14 @@ const config: GatsbyConfig = {
     organization: {
       name: "ТОО «Центр цифровой безопасности»",
       address: {
-        streetAddress: "улица Әлихан Бөкейхан, дом 32, кв.17",
+        streetAddress: "улица Әлихан Бөкейхан, дом 32",
         addressLocality: "Астана",
         addressCountry: "KZ",
         postalCode: "010000"
       },
       contactPoint: {
-        telephone: "+7 (7172) 000-000",
-        email: "info@digital-security-center.kz",
+        telephone: "+7 (702) 214-00-02",
+        email: "info@digisec.kz",
         contactType: "customer service"
       }
     }
@@ -73,7 +73,7 @@ const config: GatsbyConfig = {
             }
           }
         `,
-        resolveSiteUrl: () => "https://digital-security-center.kz",
+        resolveSiteUrl: () => "https://digisec.kz",
         resolvePages: ({ allSitePage }: any) => {
           return allSitePage.nodes.map((page: any) => ({
             path: page.path,

@@ -206,7 +206,7 @@ const Footer: React.FC = () => {
             </FooterText>
             <Badge>Аккредитована НАО «НЦЭ РК»</Badge>
             <AddressText>
-              улица Әлихан Бөкейхан, дом 32, кв.17, г. Астана, Казахстан
+              улица Әлихан Бөкейхан, дом 32, г. Астана, Казахстан
             </AddressText>
           </FooterSection>
 
@@ -230,11 +230,11 @@ const Footer: React.FC = () => {
           <FooterSection>
             <FooterTitle>Контакты</FooterTitle>
             <ContactInfo>
-              <ContactItem href="tel:+77172000000">
-                +7 (7172) 000-000
+              <ContactItem href="tel:+77022140002">
+                +7 (702) 214-00-02
               </ContactItem>
-              <ContactItem href="mailto:info@digital-security-center.kz">
-                info@digital-security-center.kz
+              <ContactItem href="mailto:info@digisec.kz">
+                info@digisec.kz
               </ContactItem>
             </ContactInfo>
           </FooterSection>
