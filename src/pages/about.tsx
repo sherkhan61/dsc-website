@@ -271,13 +271,13 @@ const AboutPage: React.FC = () => {
               Опыт работы с системами различного масштаба и уровня критичности
             </FeatureItem>
             <FeatureItem>
-              Глубокая экспертиза в области анализа исходного кода и тестирования на проникновение
+              Глубокая экспертиза в области анализа исходного кода
             </FeatureItem>
             <FeatureItem>
               Знание специфики государственных и коммерческих организаций
             </FeatureItem>
             <FeatureItem>
-              Успешный опыт сопровождения процессов сертификации
+              Успешный опыт сопровождения процессов испытаний
             </FeatureItem>
             <FeatureItem>
               Постоянное обновление методик в соответствии с актуальными угрозами
@@ -293,13 +293,13 @@ const AboutPage: React.FC = () => {
           </Paragraph>
           <FeaturesList>
             <FeatureItem>
-              OWASP Testing Guide — для тестирования веб-приложений
+              OWASP Top 10 — для тестирования веб-приложений
             </FeatureItem>
             <FeatureItem>
-              PTES (Penetration Testing Execution Standard) — для пентестинга
+              OWASP Mobile Top 10 — для тестирования мобильных приложений
             </FeatureItem>
             <FeatureItem>
-              NIST Cybersecurity Framework — для оценки зрелости ИБ
+              OWASP API Top 10 — для тестирования API
             </FeatureItem>
             <FeatureItem>
               ISO/IEC 27001 — для аудита систем менеджмента ИБ

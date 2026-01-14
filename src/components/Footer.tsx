@@ -244,14 +244,6 @@ const Footer: React.FC = () => {
           <Copyright>
             © {currentYear} ТОО «Центр цифровой безопасности». Все права защищены.
           </Copyright>
-          <FooterBottomLinks>
-            <FooterBottomLink to="/privacy">
-              Политика конфиденциальности
-            </FooterBottomLink>
-            <FooterBottomLink to="/terms">
-              Условия использования
-            </FooterBottomLink>
-          </FooterBottomLinks>
         </FooterBottom>
       </Container>
     </FooterWrapper>
