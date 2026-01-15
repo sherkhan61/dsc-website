@@ -3,7 +3,6 @@ import { Link } from "gatsby";
 import styled from "styled-components";
 import Layout from "../components/Layout";
 import SEO from "../components/SEO";
-import ImageWithSkeleton from "../components/ImageWithSkeleton";
 import { theme } from "../styles/GlobalStyles";
 
 // Service type images
@@ -323,6 +322,13 @@ const ServiceImageContainer = styled.div`
   }
 `;
 
+const ServiceImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+`;
+
 const ServiceContent = styled.div`
   padding: ${theme.spacing.xl};
   display: flex;
@@ -397,27 +403,27 @@ const IndexPage: React.FC = () => {
       image: codeAnalysisImg,
     },
     {
-      title: "Испытание защитных механизмов",
+      title: "Испытаний функций информационной безопасности",
       description: "Проверка защитных механизмов серверов и виртуальных ресурсов на соответствие технической документации и нормативным актам РК в области информационной безопасности.",
       image: securityTestingImg,
     },
     {
-      title: "Стресс-тестирование",
+      title: "Нагрузочное тестирование",
       description: "Оценка соблюдения требований доступности, целостности и конфиденциальности объекта испытаний с применением специализированного ПО в условиях автоматизированных сценариев.",
       image: stressTestImg,
     },
     {
-      title: "Аудит сетевой инфраструктуры",
+      title: "Обследование сетевой инфраструктуры",
       description: "Комплексный анализ защитных функций сетевой инфраструктуры на соответствие требованиям технической документации и стандартам безопасности.",
       image: networkAuditImg,
     },
     {
-      title: "Аудит процессов ИБ",
+      title: "Обследование процессов обеспечения ИБ",
       description: "Проверка соответствия процессов обеспечения информационной безопасности требованиям нормативных правовых актов и стандартов в сфере обеспечения информационной безопасности.",
       image: securityProcessesImg,
     },
     {
-      title: "Подготовка к сертификации",
+      title: "Подготовка к испытаниям",
       description: "Полный цикл подготовительных мероприятий для объектов информационных систем к процедуре сертификационных испытаний. Включает предварительную диагностику, подготовку технической документации, инструктаж сотрудников, исправление обнаруженных несоответствий и консультационное сопровождение по нормативным требованиям.",
       image: preparationTestingImg,
     },
@@ -472,9 +478,10 @@ const IndexPage: React.FC = () => {
           {services.map((service, index) => (
             <ServiceCard key={index}>
               <ServiceImageContainer>
-                <ImageWithSkeleton
+                <ServiceImage
                   src={service.image}
                   alt={service.title}
+                  loading="lazy"
                 />
               </ServiceImageContainer>
               <ServiceContent>
