@@ -331,6 +331,18 @@ const ServiceContent = styled.div`
   flex: 1;
 `;
 
+const ServiceTitle = styled.h3`
+  font-size: ${theme.fontSizes.xl};
+  font-weight: 700;
+  color: ${theme.colors.text};
+  margin: 0;
+  line-height: 1.3;
+
+  @media (max-width: ${theme.breakpoints.tablet}) {
+    font-size: ${theme.fontSizes.lg};
+  }
+`;
+
 const ServiceDescription = styled.p`
   font-size: ${theme.fontSizes.sm};
   color: ${theme.colors.textSecondary};
@@ -380,26 +392,32 @@ const StatLabel = styled.div`
 const IndexPage: React.FC = () => {
   const services = [
     {
+      title: "Анализ исходного кода",
       description: "Проверка с целью выявления уязвимостей ПО в соответствии с международными классификациями уязвимостей (CWE, OWASP Top 10, OWASP Mobile Top 10, OWASP API Top 10), международными базами данных уязвимостей (CVE, NIST) и стандартом Республики Казахстан 15408-3.",
       image: codeAnalysisImg,
     },
     {
+      title: "Испытание защитных механизмов",
       description: "Проверка защитных механизмов серверов и виртуальных ресурсов на соответствие технической документации и нормативным актам РК в области информационной безопасности.",
       image: securityTestingImg,
     },
     {
+      title: "Стресс-тестирование",
       description: "Оценка соблюдения требований доступности, целостности и конфиденциальности объекта испытаний с применением специализированного ПО в условиях автоматизированных сценариев.",
       image: stressTestImg,
     },
     {
+      title: "Аудит сетевой инфраструктуры",
       description: "Комплексный анализ защитных функций сетевой инфраструктуры на соответствие требованиям технической документации и стандартам безопасности.",
       image: networkAuditImg,
     },
     {
+      title: "Аудит процессов ИБ",
       description: "Проверка соответствия процессов обеспечения информационной безопасности требованиям нормативных правовых актов и стандартов в сфере обеспечения информационной безопасности.",
       image: securityProcessesImg,
     },
     {
+      title: "Подготовка к сертификации",
       description: "Полный цикл подготовительных мероприятий для объектов информационных систем к процедуре сертификационных испытаний. Включает предварительную диагностику, подготовку технической документации, инструктаж сотрудников, исправление обнаруженных несоответствий и консультационное сопровождение по нормативным требованиям.",
       image: preparationTestingImg,
     },
@@ -456,10 +474,11 @@ const IndexPage: React.FC = () => {
               <ServiceImageContainer>
                 <ImageWithSkeleton
                   src={service.image}
-                  alt={`Услуга ${index + 1}`}
+                  alt={service.title}
                 />
               </ServiceImageContainer>
               <ServiceContent>
+                <ServiceTitle>{service.title}</ServiceTitle>
                 <ServiceDescription>{service.description}</ServiceDescription>
               </ServiceContent>
             </ServiceCard>
